@@ -12,6 +12,8 @@ from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
 
+'''暂时还是昨天的旧版，今天新的还在调整，还有BUG，估计跑不通'''
+
 # Hyper Parameters
 input_size = 784
 hidden_size = 1000
@@ -103,7 +105,6 @@ def training(optimizer_sign=0):
     training_data = {'train_loss':[], 'val_loss':[], 'train_acc':[], 'val_acc':[]}
     net = Net(input_size, hidden_size, num_classes)
     # net = Net(input_size, hidden_size, num_classes)
-    net.cuda()
     net.train()
     # Loss and Optimizer
     oldnet_sign = False
@@ -152,8 +153,8 @@ def training(optimizer_sign=0):
         for i, (images, labels) in enumerate(train_loader):
             if i % 100 == 0 and basicgrad_sign == True:
                 for j, (all_images, all_labels) in enumerate(BGD_loader):
-                    all_images = all_images.view(-1, 28 * 28).cuda()
-                    all_labels = Variable(all_labels.cuda())
+                    all_images = all_images.view(-1, 28 * 28)
+                    all_labels = Variable(all_labels)
                     optimizer.zero_grad()  # zero the gradient buffer
                     outputs = net(all_images)
                     train_loss = criterion(outputs, all_labels)
@@ -173,8 +174,8 @@ def training(optimizer_sign=0):
                           % (epoch + 1, num_epochs, i + 1, len(train_dataset) // batch_size, train_loss_log.avg,
                              train_acc_log.avg))
             # Convert torch tensor to Variable
-            images = images.view(-1, 28*28).cuda()
-            labels = Variable(labels.cuda())
+            images = images.view(-1, 28*28)
+            labels = Variable(labels)
 
             # Forward + Backward + Optimize
             optimizer.zero_grad()  # zero the gradient buffer
@@ -206,14 +207,13 @@ def training(optimizer_sign=0):
                 training_data['train_acc'].append(train_acc_log.avg.detach().cpu().numpy())
 
         # Test the Model
-        '''
         net.eval()
         correct = 0
         loss = 0
         total = 0
         for images, labels in test_loader:
-            images = images.view(-1, 28*28).cuda()
-            labels = Variable(labels).cuda()
+            images = images.view(-1, 28*28)
+            labels = Variable(labels)
             outputs = net(images)
             test_loss = criterion(outputs, labels)
             val_loss_log.update(test_loss.data, images.size(0))
@@ -225,7 +225,7 @@ def training(optimizer_sign=0):
         print('Loss of the network on the 10000 test images: %.8f' % (val_loss_log.avg))
         training_data['val_loss'].append(val_loss_log.avg.detach().cpu().numpy())
         training_data['val_acc'].append(val_acc_log.avg.detach().cpu().numpy())
-        '''
+
     #logger.close()
     #logger.plot()
     return training_data
