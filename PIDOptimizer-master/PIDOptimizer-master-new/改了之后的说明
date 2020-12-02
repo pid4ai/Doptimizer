@@ -1,6 +1,0 @@
-就pid和mnist_optimizers两个程序包括了所有编好的优化器算法
-pid是算法，mnist_optimizers是验证程序
-（算法编号从0开始，['SGD', 'RMSprop', 'Adam', 'Momentum', 'PI', 'PID', 'AdaPID', 'DoubleAdaPID', 'specPID', 'SVRG', 'SARAH']）
-现在那里面第七个算法Double_Adaptive_PIDOptimizers是刚才讨论的那个思想
-之前编的自适应检查了一遍发现是有问题的，改掉了，现在是第六个算法AdaPIDOptimizer
-所有新搞得内容都在这个主目录下，其他目录里乱七八糟的玩意们不用管
