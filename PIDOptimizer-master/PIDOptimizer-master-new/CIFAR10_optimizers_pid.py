@@ -31,8 +31,8 @@ import matplotlib.pyplot as plt
 
 # Hyper Parameters
 num_classes = 10
-num_epochs = 5
-batch_size = 100
+num_epochs = 10
+batch_size = 50
 I = 3
 I = float(I)
 
@@ -40,7 +40,7 @@ I = float(I)
  #cifar10 dataset
 dataset_path = input('please input CIFAR10 path, nothing for default value \n')
 if dataset_path == '':
-    dataset_path = 'E:\\cifar-10-batches-py\\'
+    dataset_path = 'D:\github\Doptimizer\cifar-10-batches-py/'
 for i in range(1,6):
     path = dataset_path + 'data_batch_' + str(i)
     with open(path, 'rb') as batch:
