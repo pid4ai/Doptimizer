@@ -31,10 +31,12 @@ import matplotlib.pyplot as plt
 
 # Hyper Parameters
 num_classes = 10
-num_epochs = 20
+num_epochs = 50
 batch_size = 50
-I = 3
+I = 1
 I = float(I)
+
+%% good set of params: learning_rates4 adam/doublepid [0.005,0.0006], i=1,d=1
 
 
  #cifar10 dataset
