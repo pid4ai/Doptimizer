@@ -207,6 +207,83 @@ class Double_Adaptive_PIDOptimizer(Optimizer):
 
         return loss
 
+class D_decade_dadaPIDOptimizer(Optimizer):
+    def __init__(self, params, lr=required, momentum=0, beta=0.99,
+                 weight_decay=0,epsilon=0.0000001, I=5., D=10.):
+        defaults = dict(lr=lr, momentum=momentum, beta=beta,
+                        weight_decay=weight_decay, epsilon=epsilon, I=I, D=D)
+        super(D_decade_dadaPIDOptimizer, self).__init__(params, defaults)
+
+    def __setstate__(self, state):
+        super(D_decade_dadaPIDOptimizer, self).__setstate__(state)
+
+    def step(self, closure=None):
+        """Performs a single optimization step.
+        Arguments:
+            closure (callable, optional): A closure that reevaluates the model
+                and returns the loss.
+        """
+        loss = None
+        if closure is not None:
+            loss = closure()
+        for group in self.param_groups:
+            weight_decay = group['weight_decay']
+            momentum = group['momentum']
+            epsilon = group['epsilon']
+            beta = group['beta']
+            I = group['I']
+            D = group['D']
+
+            if momentum <= 0:
+                raise ValueError('this algorithm must have a positive momentum')
+
+            for p in group['params']:
+                if p.grad is None:
+                    continue
+                d_p = p.grad.data
+                param_state = self.state[p]
+                if weight_decay != 0:
+                    d_p.add_(weight_decay, p.data)
+
+                if 'time_buffer' not in param_state:
+                    param_state['time_buffer'] = 1
+                else:
+                    param_state['time_buffer'] += 1
+
+                if 'grad_buffer' not in param_state:
+                    g_buf = param_state['grad_buffer'] = torch.zeros_like(p.data)
+                    g_buf = d_p.detach()
+
+                    D_buf = param_state['D_buffer'] = torch.zeros_like(p.data)
+                    param_state['dv_buffer'] = torch.zeros_like(d_p)
+                    dv_buf = torch.zeros_like(d_p) + 1
+                else:
+                    D_buf = param_state['D_buffer']
+                    g_buf = param_state['grad_buffer']
+                    derivative = d_p.detach() - g_buf
+                    param_state['dv_buffer'] =  param_state['dv_buffer'] * beta + (1 - beta) * (derivative ** 2)
+                    D_buf.mul_(momentum).add_(1 - momentum, d_p.detach() - g_buf)
+                    self.state[p]['grad_buffer'] = d_p.detach().clone()
+                    dv_buf = param_state['dv_buffer'] / (1 - beta ** (param_state['time_buffer'] - 1))
+
+
+                if 'I_buffer' not in param_state:
+                    I_buf = param_state['I_buffer'] = (1 - momentum) * d_p.detach()
+                else:
+                    I_buf = param_state['I_buffer']
+                    I_buf.mul_(momentum).add_(1 - momentum, d_p.detach())
+
+                if 'v_buffer' not in param_state:
+                    param_state['v_buffer'] = (1-beta) * (d_p.detach() ** 2)
+                else:
+                    param_state['v_buffer'] = param_state['v_buffer'] * beta + (1 - beta) * (d_p.detach() ** 2)
+                v_buf = param_state['v_buffer'] / (1 - beta ** param_state['time_buffer'])
+
+                d_p = ((d_p.add_(I, I_buf/(1 - momentum ** param_state['time_buffer'])))/(v_buf ** 0.5 + epsilon)).add_(D / np.log(param_state['time_buffer'] / 10), D_buf/(dv_buf ** 0.5 + epsilon))
+                p.data.add_(-group['lr'], d_p)
+
+        return loss
+
 class Adaptive_derivative_PIDoptimizer(Optimizer):
     def __init__(self, params, lr=required, momentum=0, beta=0.99,
                  weight_decay=0,epsilon=0.0000001, I=5., D=10.):

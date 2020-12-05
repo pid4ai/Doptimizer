@@ -128,6 +128,9 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0):
     elif optimizer_sign == 4:
         optimizer = pid.Adaptive_derivative_PIDoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
                                                      momentum=0.9, I=I, D=derivative)
+    elif optimizer_sign == 5:
+        optimizer = pid.D_decade_dadaPIDOptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
+                                                     momentum=0.9, I=I, D=derivative)
     else:
         raise ValueError('Not correct algorithm symbol')
     if oldnet_sign == True:
@@ -199,7 +202,7 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0):
 
 
 'Algorithms that can be choosed'
-algorithm_labels = ['0.PID', '1.Adam', '2.Adapid', '3.Double_Adapid', '4.AdadPIDoptimizer']
+algorithm_labels = ['0.PID', '1.Adam', '2.Adapid', '3.Double_Adapid', '4.AdadPIDoptimizer', '5.D_decade_Adapid']
 
 task = int(input('please input a task, 0 for algorithm comparing, 1 for learning rate modify, 2 for derivative parameter modify \n'))
 if task == 0:
