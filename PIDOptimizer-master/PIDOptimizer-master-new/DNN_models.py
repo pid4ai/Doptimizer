@@ -189,9 +189,11 @@ class cifar10_CNN(nn.Module):
 class cifar10_DenseNet(nn.Module):
     def __init__(self, num_classes):
         super(cifar10_DenseNet, self).__init__()
-        self.fc1 = nn.Linear(3072, 1000)
-        self.fc2 = nn.Linear(1000, 1000)
-        self.fc3 = nn.Linear(1000, num_classes)
+        self.fc1 = nn.Linear(3072, 3000)
+        self.fc2 = nn.Linear(3000, 2000)
+        self.fc3 = nn.Linear(2000, 1000)
+        self.fc4 = nn.Linear(1000, 1000)
+        self.fc5 = nn.Linear(1000, num_classes)
 
     def forward(self, x):
         out = self.fc1(x)
@@ -199,4 +201,8 @@ class cifar10_DenseNet(nn.Module):
         out = self.fc2(out)
         out = F.relu(out)
         out = self.fc3(out)
+        out = F.relu(out)
+        out = self.fc4(out)
+        out = F.relu(out)
+        out = self.fc5(out)
         return out

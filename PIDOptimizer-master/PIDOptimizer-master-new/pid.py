@@ -279,7 +279,7 @@ class D_decade_dadaPIDOptimizer(Optimizer):
                     param_state['v_buffer'] = param_state['v_buffer'] * beta + (1 - beta) * (d_p.detach() ** 2)
                 v_buf = param_state['v_buffer'] / (1 - beta ** param_state['time_buffer'])
 
-                d_p = ((d_p.add_(I, I_buf/(1 - momentum ** param_state['time_buffer'])))/(v_buf ** 0.5 + epsilon)).add_(D / np.log(param_state['time_buffer'] / 10), D_buf/(dv_buf ** 0.5 + epsilon))
+                d_p = ((d_p.add_(I, I_buf/(1 - momentum ** param_state['time_buffer'])))/(v_buf ** 0.5 + epsilon)).add_(D / np.log(3 + param_state['time_buffer'] / 10), D_buf/(dv_buf ** 0.5 + epsilon))
                 p.data.add_(-group['lr'], d_p)
 
         return loss
