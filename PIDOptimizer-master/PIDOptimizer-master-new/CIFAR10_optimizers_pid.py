@@ -232,45 +232,108 @@ else:
     raise ValueError('not correct task symbol')
 
 model_sign = int(input('please input model sign: \n 0 for Densenet, 1 for CNN, 2 for ResNet18 \nmodel_sign:'))
+show_symbol = int(input('please choose what to show, 0 for accuracy, 1 for loss'))
+if not(show_symbol == 0 or show_symbol == 1):
+    raise  ValueError('incorrect show symbol')
 models = ['DenseNet', 'CNN', 'ResNet']
 
 
 comparing_datas = []
 test_algorithm_labels = []
 
+if show_symbol == 0:
+    if task == 0:
+        for i in range(len(test_algorithms)):
+            for j in range(repeats):
+                if j == 0:
+                    comparing_data = \
+                    training(model_sign=model_sign, optimizer_sign=test_algorithms[i], learning_rate=learning_rates[i],
+                             derivative=derivatives[i])['train_loss']
+                else:
+                    comparing_data += \
+                    training(model_sign=model_sign, optimizer_sign=test_algorithms[i], learning_rate=learning_rates[i],
+                             derivative=derivatives[i])['train_loss']
+            comparing_datas.append(np.array(comparing_data) / repeats)
+            test_algorithm_labels.append(
+                algorithm_labels[test_algorithms[i]] + ' learning_rate=' + str(learning_rates[i]))
+    elif task == 1:
+        for i in range(len(learning_rates)):
+            for j in range(repeats):
+                if j == 0:
+                    comparing_data = \
+                    training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rates[i],
+                             derivative=derivatives)['train_loss']
+                else:
+                    comparing_data += \
+                    training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rates[i],
+                             derivative=derivatives)['train_loss']
+                comparing_datas.append(comparing_data)
+                test_algorithm_labels.append(
+                    algorithm_labels[test_algorithm] + ' learning_rate=' + str(learning_rates[i]))
+    elif task == 2:
+        for i in range(len(derivatives)):
+            for j in range(repeats):
+                if j == 0:
+                    comparing_data = \
+                    training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rate,
+                             derivative=derivatives[i])['train_loss']
+                else:
+                    comparing_data += \
+                    training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rate,
+                             derivative=derivatives[i])['train_loss']
+                comparing_datas.append(comparing_data)
+                test_algorithm_labels.append(algorithm_labels[test_algorithm] + ' derivative=' + str(derivatives[i]))
+    for i in range(len(comparing_datas)):
+        plt.plot(range(len(comparing_datas[i])), comparing_datas[i])
+    plt.legend(test_algorithm_labels)
+else:
+    if task == 0:
+        for i in range(len(test_algorithms)):
+            for j in range(repeats):
+                if j == 0:
+                    comparing_data = \
+                    training(model_sign=model_sign, optimizer_sign=test_algorithms[i], learning_rate=learning_rates[i],
+                             derivative=derivatives[i])['train_loss']
+                else:
+                    comparing_data += \
+                    training(model_sign=model_sign, optimizer_sign=test_algorithms[i], learning_rate=learning_rates[i],
+                             derivative=derivatives[i])['train_loss']
+            comparing_datas.append(np.array(comparing_data) / repeats)
+            test_algorithm_labels.append(
+                algorithm_labels[test_algorithms[i]] + ' learning_rate=' + str(learning_rates[i]))
+    elif task == 1:
+        for i in range(len(learning_rates)):
+            for j in range(repeats):
+                if j == 0:
+                    comparing_data = \
+                    training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rates[i],
+                             derivative=derivatives)['train_acc']
+                else:
+                    comparing_data += \
+                    training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rates[i],
+                             derivative=derivatives)['train_acc']
+                comparing_datas.append(comparing_data)
+                test_algorithm_labels.append(
+                    algorithm_labels[test_algorithm] + ' learning_rate=' + str(learning_rates[i]))
+    elif task == 2:
+        for i in range(len(derivatives)):
+            for j in range(repeats):
+                if j == 0:
+                    comparing_data = \
+                    training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rate,
+                             derivative=derivatives[i])['train_acc']
+                else:
+                    comparing_data += \
+                    training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rate,
+                             derivative=derivatives[i])['train_acc']
+                comparing_datas.append(comparing_data)
+                test_algorithm_labels.append(algorithm_labels[test_algorithm] + ' derivative=' + str(derivatives[i]))
+    for i in range(len(comparing_datas)):
+        plt.plot(range(len(comparing_datas[i])), comparing_datas[i])
+    plt.legend(test_algorithm_labels)
 
-if task == 0:
-    for i in range(len(test_algorithms)):
-        for j in range(repeats):
-            if j == 0:
-                comparing_data = training(model_sign=model_sign, optimizer_sign=test_algorithms[i], learning_rate=learning_rates[i], derivative=derivatives[i])['train_acc']
-            else:
-                comparing_data += training(model_sign=model_sign, optimizer_sign=test_algorithms[i], learning_rate=learning_rates[i], derivative=derivatives[i])['train_acc']
-        comparing_datas.append(np.array(comparing_data) / repeats)
-        test_algorithm_labels.append(algorithm_labels[test_algorithms[i]] + ' learning_rate=' + str(learning_rates[i]))
-elif task == 1:
-    for i in range(len(learning_rates)):
-        for j in range(repeats):
-            if j == 0:
-                comparing_data = training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rates[i], derivative=derivatives)['train_acc']
-            else:
-                comparing_data += training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rates[i], derivative=derivatives)['train_acc']
-            comparing_datas.append(comparing_data)
-            test_algorithm_labels.append(algorithm_labels[test_algorithm] + ' learning_rate=' + str(learning_rates[i]))
-elif task == 2:
-    for i in range(len(derivatives)):
-        for j in range(repeats):
-            if j == 0:
-                comparing_data = training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rate, derivative=derivatives[i])['train_acc']
-            else:
-                comparing_data += training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rate, derivative=derivatives[i])['train_acc']
-            comparing_datas.append(comparing_data)
-            test_algorithm_labels.append(algorithm_labels[test_algorithm] + ' derivative=' + str(derivatives[i]))
-for i in range(len(comparing_datas)):
-    plt.plot(range(len(comparing_datas[i])), comparing_datas[i])
-plt.legend(test_algorithm_labels)
-
-plt.title(models[model_sign] +  ' CIFAR10, ' + 'derivatives:' + str(derivatives))
+shows = ['acc', 'loss']
+plt.title(models[model_sign] +  ' CIFAR10, ' + shows[show_symbol] + ' ,derivatives:' + str(derivatives))
 
 plt.show()
 
