@@ -31,7 +31,7 @@ import matplotlib.pyplot as plt
 
 # Hyper Parameters
 num_classes = 10
-num_epochs = 20
+num_epochs = 10
 batch_size = 50
 I = 3
 I = float(I)
@@ -250,12 +250,12 @@ if show_symbol == 0:
             for j in range(repeats):
                 if j == 0:
                     comparing_data = \
-                    training(model_sign=model_sign, optimizer_sign=test_algorithms[i], learning_rate=learning_rates[i],
-                             derivative=derivatives[i])['train_loss']
+                    np.array(training(model_sign=model_sign, optimizer_sign=test_algorithms[i], learning_rate=learning_rates[i],
+                             derivative=derivatives[i])['train_loss'])
                 else:
                     comparing_data += \
-                    training(model_sign=model_sign, optimizer_sign=test_algorithms[i], learning_rate=learning_rates[i],
-                             derivative=derivatives[i])['train_loss']
+                    np.array(training(model_sign=model_sign, optimizer_sign=test_algorithms[i], learning_rate=learning_rates[i],
+                             derivative=derivatives[i])['train_loss'])
             comparing_datas.append(np.array(comparing_data) / repeats)
             test_algorithm_labels.append(
                 algorithm_labels[test_algorithms[i]] + ' learning_rate=' + str(learning_rates[i]))
@@ -264,12 +264,12 @@ if show_symbol == 0:
             for j in range(repeats):
                 if j == 0:
                     comparing_data = \
-                    training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rates[i],
-                             derivative=derivatives)['train_loss']
+                    np.array(training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rates[i],
+                             derivative=derivatives)['train_loss'])
                 else:
                     comparing_data += \
-                    training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rates[i],
-                             derivative=derivatives)['train_loss']
+                        np.array(training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rates[i],
+                                          derivative=derivatives)['train_loss'])
             comparing_datas.append(comparing_data)
             test_algorithm_labels.append(
                     algorithm_labels[test_algorithm] + ' learning_rate=' + str(learning_rates[i]))
@@ -278,12 +278,12 @@ if show_symbol == 0:
             for j in range(repeats):
                 if j == 0:
                     comparing_data = \
-                    training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rate,
-                             derivative=derivatives[i])['train_loss']
+                    np.array(training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rate,
+                             derivative=derivatives[i])['train_loss'])
                 else:
                     comparing_data += \
-                    training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rate,
-                             derivative=derivatives[i])['train_loss']
+                    np.array(training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rate,
+                             derivative=derivatives[i])['train_loss'])
             comparing_datas.append(comparing_data)
             test_algorithm_labels.append(algorithm_labels[test_algorithm] + ' derivative=' + str(derivatives[i]))
     for i in range(len(comparing_datas)):
@@ -295,12 +295,12 @@ else:
             for j in range(repeats):
                 if j == 0:
                     comparing_data = \
-                    training(model_sign=model_sign, optimizer_sign=test_algorithms[i], learning_rate=learning_rates[i],
-                             derivative=derivatives[i])['train_loss']
+                    np.array(training(model_sign=model_sign, optimizer_sign=test_algorithms[i], learning_rate=learning_rates[i],
+                             derivative=derivatives[i])['train_loss'])
                 else:
                     comparing_data += \
-                    training(model_sign=model_sign, optimizer_sign=test_algorithms[i], learning_rate=learning_rates[i],
-                             derivative=derivatives[i])['train_loss']
+                    np.array(training(model_sign=model_sign, optimizer_sign=test_algorithms[i], learning_rate=learning_rates[i],
+                             derivative=derivatives[i])['train_loss'])
             comparing_datas.append(np.array(comparing_data) / repeats)
             test_algorithm_labels.append(
                 algorithm_labels[test_algorithms[i]] + ' learning_rate=' + str(learning_rates[i]))
@@ -309,12 +309,12 @@ else:
             for j in range(repeats):
                 if j == 0:
                     comparing_data = \
-                    training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rates[i],
-                             derivative=derivatives)['train_acc']
+                    np.array(training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rates[i],
+                             derivative=derivatives)['train_acc'])
                 else:
                     comparing_data += \
-                    training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rates[i],
-                             derivative=derivatives)['train_acc']
+                    np.array(training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rates[i],
+                             derivative=derivatives)['train_acc'])
             comparing_datas.append(comparing_data)
             test_algorithm_labels.append(
                     algorithm_labels[test_algorithm] + ' learning_rate=' + str(learning_rates[i]))
@@ -323,12 +323,12 @@ else:
             for j in range(repeats):
                 if j == 0:
                     comparing_data = \
-                    training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rate,
-                             derivative=derivatives[i])['train_acc']
+                    np.array(training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rate,
+                             derivative=derivatives[i])['train_acc'])
                 else:
                     comparing_data += \
-                    training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rate,
-                             derivative=derivatives[i])['train_acc']
+                    np.array(training(model_sign=model_sign, optimizer_sign=test_algorithm, learning_rate=learning_rate,
+                             derivative=derivatives[i])['train_acc'])
             comparing_datas.append(comparing_data)
             test_algorithm_labels.append(algorithm_labels[test_algorithm] + ' derivative=' + str(derivatives[i]))
     for i in range(len(comparing_datas)):
