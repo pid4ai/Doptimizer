@@ -6,6 +6,9 @@
       <change afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../.idea/other.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Figure_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../papers/amsgrad.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PIDOptimizer-master-new/CIFAR10_optimizers_pid.py" beforeDir="false" afterPath="$PROJECT_DIR$/PIDOptimizer-master-new/CIFAR10_optimizers_pid.py" afterDir="false" />
     </list>

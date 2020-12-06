@@ -31,8 +31,8 @@ import matplotlib.pyplot as plt
 
 # Hyper Parameters
 num_classes = 10
-num_epochs = 20
-batch_size = 256
+num_epochs = 30
+batch_size = 128
 I = 1
 I = float(I)
 
