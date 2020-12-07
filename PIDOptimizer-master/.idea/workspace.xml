@@ -2,15 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="001d4e64-32d1-4f92-a7c4-fc86cec9ed3b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../.idea/other.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Figure_1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../papers/amsgrad.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PIDOptimizer-master-new/CIFAR10_optimizers_pid.py" beforeDir="false" afterPath="$PROJECT_DIR$/PIDOptimizer-master-new/CIFAR10_optimizers_pid.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -159,11 +151,11 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Python.CIFAR10_optimizers_pid" />
       <item itemvalue="Python.mnist_SARAH" />
       <item itemvalue="Python.mnist_optimizers" />
       <item itemvalue="Python.mnist_pidnew (1)" />
       <item itemvalue="Python.mnist_pidnew" />
-      <item itemvalue="Python.CIFAR10_optimizers_pid" />
     </list>
     <recent_temporary>
       <list>
