@@ -449,7 +449,7 @@ class I_decade_Adaoptimizer(Optimizer):
                         I_buf.mul_(momentum).add_(1 - momentum, d_p)
                 else:
                     raise ValueError('Please using RMSprop insteaad')
-                I_rate = 0.5 + 0.5 * (0.99 ** param_state['time_buffer'])
+                I_rate = 0.7 + 0.3 * (0.99 ** param_state['time_buffer'])
                 delta = (d_p * (1 - I_rate) + (I_buf / (1 - momentum ** param_state['time_buffer'])) * I_rate) / (v_buf ** 0.5 + epsilon)
 
                 p.data.add_(-group['lr'], delta)

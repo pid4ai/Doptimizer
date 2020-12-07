@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="001d4e64-32d1-4f92-a7c4-fc86cec9ed3b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../.idea/Doptimizer.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../.idea/other.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PIDOptimizer-master-new/CIFAR10_optimizers_pid.py" beforeDir="false" afterPath="$PROJECT_DIR$/PIDOptimizer-master-new/CIFAR10_optimizers_pid.py" afterDir="false" />
-    </list>
+    <list default="true" id="001d4e64-32d1-4f92-a7c4-fc86cec9ed3b" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -52,7 +43,7 @@
     </key>
   </component>
   <component name="RunManager" selected="Python.CIFAR10_optimizers_pid">
-    <configuration name="CIFAR10_optimizers_pid" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="CIFAR10_optimizers_pid" type="PythonConfigurationType" factoryName="Python" singleton="false" temporary="true" nameIsGenerated="true">
       <module name="PIDOptimizer-master" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -215,6 +206,16 @@
           <url>file://$PROJECT_DIR$/PIDOptimizer-master/optimizers/mnist_optimizers2.py</url>
           <line>179</line>
           <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/PIDOptimizer-master-new/CIFAR10_optimizers_pid.py</url>
+          <line>365</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/PIDOptimizer-master-new/CIFAR10_optimizers_pid.py</url>
+          <line>362</line>
+          <option name="timeStamp" value="14" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

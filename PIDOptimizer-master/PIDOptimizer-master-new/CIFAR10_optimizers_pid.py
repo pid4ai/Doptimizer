@@ -40,7 +40,7 @@ I = float(I)
  #cifar10 dataset
 dataset_path = input('please input CIFAR10 path, nothing for default value \n')
 if dataset_path == '':
-    dataset_path = 'D:\github\Doptimizer\cifar-10-batches-py/'
+    dataset_path = 'D:\Gitkraken\Doptimizer\cifar-10-batches-py/'
 for i in range(1,6):
     path = dataset_path + 'data_batch_' + str(i)
     with open(path, 'rb') as batch:
@@ -91,7 +91,7 @@ test_loader = torch.utils.data.DataLoader(dataset=cifar10_test_dataset(), batch_
 BGD_loader = torch.utils.data.DataLoader(dataset=cifar10_dataset(),batch_size=len(images),shuffle=True)
 
 #testing functon
-def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, momentum=[0.9, 0.8]):
+def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, momentum=[0.9, 0.9]):
     training_data = {'train_loss':[], 'val_loss':[], 'train_acc':[], 'val_acc':[]}
     if model_sign == 0:
         net = cifar10_DenseNet(num_classes)
