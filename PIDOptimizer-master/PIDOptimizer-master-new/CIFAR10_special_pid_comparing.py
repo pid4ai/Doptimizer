@@ -21,7 +21,7 @@ from torchsummary import summary
 from torch.autograd import Variable
 from torch.optim.sgd import SGD
 import pickle
-import pid
+import special_pid
 import os
 import numpy as np
 from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
@@ -117,27 +117,17 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, m
     criterion = nn.CrossEntropyLoss()
     print('optimizer_sign:' + str(optimizer_sign))
     if optimizer_sign == 0:
-        optimizer = pid.PIDOptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum, I=I, D=derivative)
+        optimizer = special_pid.Adamoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum[0])
     elif optimizer_sign == 1:
-        optimizer = pid.Adamoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum[0])
-
+        optimizer = special_pid.AdapidOptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
+                                                     momentum=momentum, I=I, D=derivative)
     elif optimizer_sign == 2:
-        optimizer = pid.AdapidOptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum, I=I,
-                                        D=derivative)
-    elif optimizer_sign == 3:
-        optimizer = pid.Double_Adaptive_PIDOptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
-                                                     momentum=momentum, I=I, D=derivative)
-    elif optimizer_sign == 4:
-        optimizer = pid.Adaptive_derivative_PIDoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
-                                                     momentum=momentum, I=I, D=derivative)
-    elif optimizer_sign == 5:
-        optimizer = pid.D_decade_dadaPIDOptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
-                                                     momentum=momentum, I=I, D=derivative)
-    elif optimizer_sign == 6:
-        optimizer = pid.I_decade_Adaoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum[0])
+        optimizer = special_pid.special_Adapidoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
+                                                        momentum=momentum, I=I, D=derivative)
+        oldnet_sign = True
     else:
         raise ValueError('Not correct algorithm symbol')
-    if oldnet_sign == True:
+    if oldnet_sign:
         torch.save(net, 'net.pkl')
         old_net = torch.load('net.pkl')
 
@@ -163,6 +153,16 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, m
             outputs = net(images)
             train_loss = criterion(outputs, labels)
             train_loss.backward()
+            if oldnet_sign:
+                old_net.zero_grad()
+                old_outputs = old_net(images)
+                old_loss = criterion(old_outputs, labels)
+                old_loss.backward()
+                parameters  = list(old_net.parameters())
+                old_grads = [parameter.grad.detach() for parameter in parameters]
+                optimizer.get_oldgrad(old_grads)
+                torch.save(net, 'net.pkl')
+                old_net = torch.load('net.pkl')
             optimizer.step()
             prec1, prec5 = accuracy(outputs.data, labels.data, topk=(1, 5))
             train_loss_log.update(train_loss.data, images.size(0))

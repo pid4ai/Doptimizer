@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-<<<<<<< HEAD
     <list default="true" id="001d4e64-32d1-4f92-a7c4-fc86cec9ed3b" name="Default Changelist" comment="" />
-=======
-    <list default="true" id="001d4e64-32d1-4f92-a7c4-fc86cec9ed3b" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
->>>>>>> main
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -35,20 +29,21 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../DerivativeOptimizers/PIDOptimizer-master/PIDOptimizer-master/CIFAR10_optimizers_special.py" />
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Gitkraken\Doptimizer\PIDOptimizer-master\PIDOptimizer-master-new" />
+      <recent name="E:\files\programs\PIDOptimizer-master\PIDOptimizer-master" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\files\programs\PIDOptimizer-master\PIDOptimizer-master\optimizers" />
       <recent name="E:\files\programs\PIDOptimizer-master\PIDOptimizer-master" />
       <recent name="E:\files\programs\PIDOptimizer-master" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="E:\files\programs\PIDOptimizer-master\PIDOptimizer-master" />
-    </key>
   </component>
-  <component name="RunManager" selected="Python.CIFAR10_optimizers_pid">
+  <component name="RunManager" selected="Python.CIFAR10_special_pid_comparing">
     <configuration name="CIFAR10_optimizers_pid" type="PythonConfigurationType" factoryName="Python" singleton="false" temporary="true" nameIsGenerated="true">
       <module name="PIDOptimizer-master" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -70,7 +65,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="mnist_SARAH" type="PythonConfigurationType" factoryName="Python" singleton="false" temporary="true">
+    <configuration name="CIFAR10_special_pid_comparing" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="PIDOptimizer-master" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -78,11 +73,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/PIDOptimizer-master" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/PIDOptimizer-master-new" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="E:\files\programs\PIDOptimizer-master\PIDOptimizer-master\optimizers\mnist_SARAH.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/PIDOptimizer-master-new/CIFAR10_special_pid_comparing.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -156,18 +151,18 @@
     </configuration>
     <list>
       <item itemvalue="Python.CIFAR10_optimizers_pid" />
-      <item itemvalue="Python.mnist_SARAH" />
       <item itemvalue="Python.mnist_optimizers" />
       <item itemvalue="Python.mnist_pidnew (1)" />
       <item itemvalue="Python.mnist_pidnew" />
+      <item itemvalue="Python.CIFAR10_special_pid_comparing" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.CIFAR10_special_pid_comparing" />
         <item itemvalue="Python.CIFAR10_optimizers_pid" />
         <item itemvalue="Python.mnist_optimizers" />
         <item itemvalue="Python.mnist_pidnew (1)" />
         <item itemvalue="Python.mnist_pidnew" />
-        <item itemvalue="Python.mnist_SARAH" />
       </list>
     </recent_temporary>
   </component>
@@ -222,6 +217,11 @@
           <url>file://$PROJECT_DIR$/PIDOptimizer-master-new/CIFAR10_optimizers_pid.py</url>
           <line>365</line>
           <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/PIDOptimizer-master-new/CIFAR10_special_pid_comparing.py</url>
+          <line>365</line>
+          <option name="timeStamp" value="17" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
