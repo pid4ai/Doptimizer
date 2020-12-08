@@ -36,6 +36,8 @@ batch_size = 500
 I = 3
 I = float(I)
 
+# good set of params: learning_rates4 adam/doublepid [0.005,0.0006], i=1,d=1
+
 
  #cifar10 dataset
 dataset_path = input('please input CIFAR10 path, nothing for default value \n')
