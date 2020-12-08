@@ -62,9 +62,9 @@ class AdapidOptimizer(Optimizer):
                     self.state[p]['grad_buffer'] = d_p.detach().clone()
                     dv_buf = param_state['dv_buffer'] / (1 - beta ** (param_state['time_buffer'] - 1))
 
-
                 if 'I_buffer' not in param_state:
-                    I_buf = param_state['I_buffer'] = (1 - momentum[0]) * d_p.detach()
+                    I_buf = param_state['I_buffer'] = torch.zeros_like(p.data)
+                    I_buf.mul_(momentum[0]).add_(1 - momentum[0], d_p.detach())
                 else:
                     I_buf = param_state['I_buffer']
                     I_buf.mul_(momentum[0]).add_(1 - momentum[0], d_p.detach())
@@ -75,8 +75,8 @@ class AdapidOptimizer(Optimizer):
                     param_state['v_buffer'] = param_state['v_buffer'] * beta + (1 - beta) * (d_p.detach() ** 2)
                 v_buf = param_state['v_buffer'] / (1 - beta ** param_state['time_buffer'])
 
-                d_p = ((d_p.add_(I, I_buf/(1 - momentum[0] ** param_state['time_buffer'])))/(v_buf ** 0.5 + epsilon)).add_(D, D_buf/(dv_buf ** 0.5 + epsilon))
-                p.data.add_(-group['lr'], d_p)
+                grad = d_p.add_(I, I_buf/(v_buf ** 0.5 + epsilon)).add_(D, D_buf/(dv_buf ** 0.5 + epsilon))
+                p.data.add_(-group['lr'], grad)
 
         return loss
 

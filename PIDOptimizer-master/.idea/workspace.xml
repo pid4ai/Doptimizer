@@ -43,7 +43,7 @@
       <recent name="E:\files\programs\PIDOptimizer-master" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.CIFAR10_special_pid_comparing">
+  <component name="RunManager" selected="Python.CIFAR10_optimizers_pid">
     <configuration name="CIFAR10_optimizers_pid" type="PythonConfigurationType" factoryName="Python" singleton="false" temporary="true" nameIsGenerated="true">
       <module name="PIDOptimizer-master" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -65,7 +65,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="CIFAR10_special_pid_comparing" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="CIFAR10_special_pid_comparing" type="PythonConfigurationType" factoryName="Python" singleton="false" temporary="true" nameIsGenerated="true">
       <module name="PIDOptimizer-master" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -158,8 +158,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.CIFAR10_special_pid_comparing" />
         <item itemvalue="Python.CIFAR10_optimizers_pid" />
+        <item itemvalue="Python.CIFAR10_special_pid_comparing" />
         <item itemvalue="Python.mnist_optimizers" />
         <item itemvalue="Python.mnist_pidnew (1)" />
         <item itemvalue="Python.mnist_pidnew" />
@@ -210,17 +210,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/PIDOptimizer-master-new/CIFAR10_optimizers_pid.py</url>
-          <line>368</line>
+          <line>366</line>
           <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/PIDOptimizer-master-new/CIFAR10_optimizers_pid.py</url>
-          <line>365</line>
+          <line>363</line>
           <option name="timeStamp" value="14" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/PIDOptimizer-master-new/CIFAR10_special_pid_comparing.py</url>
-          <line>365</line>
+          <line>364</line>
           <option name="timeStamp" value="17" />
         </line-breakpoint>
       </breakpoints>

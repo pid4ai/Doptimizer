@@ -28,12 +28,13 @@ from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
 from DNN_models import cifar10_CNN, cifar10_DenseNet, cifar10_ResNet18
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
-
+import random
+random.seed(2)
 # Hyper Parameters
 num_classes = 10
-num_epochs = 30
+num_epochs = 10
 batch_size = 500
-I = 3
+I = 1
 I = float(I)
 
 # good set of params: learning_rates4 adam/doublepid [0.005,0.0006], i=1,d=1
@@ -88,9 +89,8 @@ class cifar10_test_dataset(torch.utils.data.Dataset):
     def __len__(self):
         return len(self.images)
 
-train_loader = torch.utils.data.DataLoader(dataset=cifar10_dataset(), batch_size=batch_size, shuffle=True)
-test_loader = torch.utils.data.DataLoader(dataset=cifar10_test_dataset(), batch_size=batch_size, shuffle=True)
-BGD_loader = torch.utils.data.DataLoader(dataset=cifar10_dataset(),batch_size=len(images),shuffle=True)
+train_loader = torch.utils.data.DataLoader(dataset=cifar10_dataset(), batch_size=batch_size, shuffle=False)
+test_loader = torch.utils.data.DataLoader(dataset=cifar10_test_dataset(), batch_size=batch_size, shuffle=False)
 
 #testing functon
 def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, momentum=[0.9, 0.9]):
@@ -119,22 +119,21 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, m
     if optimizer_sign == 0:
         optimizer = pid.PIDOptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum, I=I, D=derivative)
     elif optimizer_sign == 1:
-        optimizer = pid.Adamoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum[0])
-
+        optimizer = pid.PIDOptimizer_test(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum, I=I, D=derivative)
     elif optimizer_sign == 2:
+        optimizer = pid.PIDOptimizer_test(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum, I=I, D=derivative)
+    elif optimizer_sign == 3:
+        optimizer = pid.PIDOptimizer_test(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum, I=I, D=derivative)
+    elif optimizer_sign == 4:
+        optimizer = pid.Adamoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum[0])
+    elif optimizer_sign == 5:
         optimizer = pid.AdapidOptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum, I=I,
                                         D=derivative)
-    elif optimizer_sign == 3:
-        optimizer = pid.Double_Adaptive_PIDOptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
-                                                     momentum=momentum, I=I, D=derivative)
-    elif optimizer_sign == 4:
-        optimizer = pid.Adaptive_derivative_PIDoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
-                                                     momentum=momentum, I=I, D=derivative)
-    elif optimizer_sign == 5:
-        optimizer = pid.D_decade_dadaPIDOptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
-                                                     momentum=momentum, I=I, D=derivative)
     elif optimizer_sign == 6:
         optimizer = pid.I_decade_Adaoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum[0])
+    elif optimizer_sign == 7:
+        optimizer = pid.AdapidOptimizer_test(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum, I=I,
+                                        D=derivative)
     else:
         raise ValueError('Not correct algorithm symbol')
     if oldnet_sign == True:
@@ -206,8 +205,7 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, m
 
 
 'Algorithms that can be choosed'
-algorithm_labels = ['0.PID', '1.Adam', '2.Adapid', '3.Double_Adapid', '4.AdadPIDoptimizer',
-                    '5.D_decade_Adapid', '6.I_dacade_Adaptive', '7.D_Adam']
+algorithm_labels = ['0.PID', '1.PID_test', '2.PID_test1', '3.PID_test2', '4.Adam', '5.Adapid', '6.decadeAdam', '7.Adapid_test']
 
 task = int(input('please input a task, 0 for algorithm comparing, 1 for learning rate modify, '
                  '2 for derivative parameter modify,  3 for momentum parameter (beta) modify \n'))
