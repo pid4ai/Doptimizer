@@ -31,7 +31,7 @@ import matplotlib.pyplot as plt
 
 # Hyper Parameters
 num_classes = 10
-num_epochs = 30
+num_epochs = 100
 batch_size = 500
 I = 3
 I = float(I)
@@ -168,7 +168,7 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, m
             train_loss_log.update(train_loss.data, images.size(0))
             train_acc_log.update(prec1, images.size(0))
 
-            if (i + 1) % 30 == 0:
+            if (i + 1) % 20 == 0:
                 print('Epoch [%d/%d], Step [%d/%d], Loss: %.4f, Acc: %.8f'
                       % (epoch + 1, num_epochs, i + 1, 60000 / batch_size, train_loss_log.avg,
                          train_acc_log.avg))
