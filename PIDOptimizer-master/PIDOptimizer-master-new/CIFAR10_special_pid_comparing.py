@@ -126,6 +126,10 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, m
         optimizer = special_pid.double_Adapidoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
                                                         momentum=momentum, I=I, D=derivative)
         oldnet_sign = True
+    elif optimizer_sign == 3:
+        optimizer = special_pid.PIDoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
+                                                        momentum=momentum, I=I, D=derivative)
+        oldnet_sign = True
     else:
         raise ValueError('Not correct algorithm symbol')
     if oldnet_sign:
