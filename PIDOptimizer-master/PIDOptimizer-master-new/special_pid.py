@@ -233,6 +233,81 @@ class double_Adapidoptimizer(Optimizer):
 
         return loss
 
+class PIDoptimizer(Optimizer):
+    def __init__(self, params, lr=required, beta=0.99, momentum=[0.9, 0.9],
+                 epsilon=0.0000001, weight_decay=0, I=5., D=10.):
+        defaults = dict(lr=lr, beta=beta, momentum=momentum, epsilon=epsilon,
+                         weight_decay=weight_decay, I=I, D=D)
+        super(PIDoptimizer, self).__init__(params, defaults)
+        self.get_grad_symbol = False
+
+    def __setstate__(self, state):
+        super(PIDoptimizer, self).__setstate__(state)
+
+
+    def get_oldgrad(self, old_grads):
+        self.old_grads = old_grads
+        if len(old_grads) != len(self.param_groups[0]['params']):
+            raise ValueError('NOT correct grads')
+        params = self.param_groups[0]['params']
+        for i in range(len(params)):
+            if params[i].size() != old_grads[i].size():
+                raise ValueError('NOT correct grads')
+        self.get_grad_symbol = True
+
+    def step(self, closure=None):
+        if len(self.param_groups) != 1:
+            raise ValueError('do not support multiple nets')
+
+        if self.get_grad_symbol == False:
+            raise ValueError('old grad not got')
+        loss = None
+
+        if closure is not None:
+            loss = closure()
+
+        for j in range(len(self.param_groups)):
+            group = self.param_groups[j]
+            weight_decay = group['weight_decay']
+            momentum = group['momentum']
+            I = group['I']
+            D = group['D']
+            beta = group['beta']
+            epsilon = group['epsilon']
+            for i in range(len(group['params'])):
+                p = group['params'][i]
+                if p.grad is None:
+                    continue
+                d_p = p.grad.data
+                if weight_decay != 0:
+                    d_p.add_(weight_decay, p.data)
+                if momentum[0] <= 0:
+                    raise ValueError('Do not support zero or negative momentum !')
+                param_state = self.state[p]
+                if 'time_buffer' not in param_state:
+                    param_state['time_buffer'] = 1
+                else:
+                    param_state['time_buffer'] += 1
+                if 'I_buffer' not in param_state:
+                    I_buf = param_state['I_buffer'] = torch.zeros_like(p.data)
+                    I_buf.mul_(momentum[0]).add_(1 - momentum[0], d_p.detach())
+                else:
+                    I_buf = param_state['I_buffer']
+                    I_buf.mul_(momentum[0]).add_(1 - momentum[0], d_p.detach())
+
+                if 'D_buffer' not in param_state:
+                    D_buf = param_state['D_buffer'] = torch.zeros_like(p.data)
+                    D_buf.mul_(momentum[1]).add_(1 - momentum[1], d_p.detach() - self.old_grads[i])
+                else:
+                    D_buf = param_state['D_buffer']
+                    D_buf.mul_(momentum[1]).add_(1 - momentum[1], d_p.detach() - self.old_grads[i])
+                p_grad = (d_p.add_(I, I_buf).add(D, D_buf))
+                p.data.add_(-group['lr'], p_grad)
+
+        self.get_grad_symbol = False
+
+        return loss
+
 
 
 

@@ -31,7 +31,7 @@ import matplotlib.pyplot as plt
 
 # Hyper Parameters
 num_classes = 10
-num_epochs = 100
+num_epochs = 50
 batch_size = 500
 I = 3
 I = float(I)
@@ -121,6 +121,7 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, m
     elif optimizer_sign == 1:
         optimizer = special_pid.Adapidoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
                                                      momentum=momentum, I=I, D=derivative)
+        oldnet_sign = True
     elif optimizer_sign == 2:
         optimizer = special_pid.double_Adapidoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
                                                         momentum=momentum, I=I, D=derivative)
