@@ -53,7 +53,7 @@ class Adamoptimizer(Optimizer):
                         I_buf = param_state['I_buffer']
                         I_buf.mul_(momentum).add_(1 - momentum, d_p)
                 else:
-                    raise ValueError('Please using RMSprop insteaad')
+                    raise ValueError('Please using RMSprop instead')
 
                 p.data.add_(-group['lr'], (I_buf / (1 - momentum ** param_state['time_buffer'])) / (v_buf ** 0.5 + epsilon))
 
