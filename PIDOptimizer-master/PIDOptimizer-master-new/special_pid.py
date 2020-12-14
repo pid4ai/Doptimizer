@@ -187,6 +187,7 @@ class double_Adapidoptimizer(Optimizer):
             D = group['D']
             beta = group['beta']
             epsilon = group['epsilon']
+            ds = []
             for i in range(len(group['params'])):
                 p = group['params'][i]
                 if p.grad is None:
@@ -217,9 +218,11 @@ class double_Adapidoptimizer(Optimizer):
                 if 'D_buffer' not in param_state:
                     D_buf = param_state['D_buffer'] = torch.zeros_like(p.data)
                     D_buf.mul_(momentum[1]).add_(1 - momentum[1], d_p.detach() - self.old_grads[i])
+                    d = torch.zeros_like(d_p)
                 else:
                     D_buf = param_state['D_buffer']
-                    D_buf.mul_(momentum[1]).add_(1 - momentum[1], d_p.detach() - self.old_grads[i])
+                    d = d_p.detach() - self.old_grads[i]
+                    D_buf.mul_(momentum[1]).add_(1 - momentum[1], d)
                 if 'dv_buffer' not in param_state:
                     param_state['dv_buffer'] = ((d_p.detach() - self.old_grads[i]) ** 2) * (1 - beta)
                     dv_buf = param_state['dv_buffer'] / (1 - beta ** param_state['time_buffer'])
@@ -228,10 +231,11 @@ class double_Adapidoptimizer(Optimizer):
                     dv_buf = param_state['dv_buffer'] / (1 - beta ** param_state['time_buffer'])
                 p_grad = ((d_p.add_(I, I_buf))/(v_buf ** 0.5 + epsilon)).add(D, D_buf/(dv_buf ** 0.5 + epsilon))
                 p.data.add_(-group['lr'], p_grad)
-
+                ds.append(torch.mean(torch.abs(d)).detach().cpu().numpy())
+            ds = np.mean(np.array(ds))
         self.get_grad_symbol = False
 
-        return loss
+        return ds, loss
 
 class PIDoptimizer(Optimizer):
     def __init__(self, params, lr=required, beta=0.99, momentum=[0.9, 0.9],

@@ -24,6 +24,11 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/PIDOptimizer-master/PIDOptimizer-master-new" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\files\programs\Gitkraken\Doptimizer\PIDOptimizer-master\PIDOptimizer-master-new" />
+    </key>
+  </component>
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
@@ -36,7 +41,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.CIFAR10_optimizers_pid">
+  <component name="RunManager" selected="Python.CIFAR10_special_pid_comparing_parallel">
     <configuration name="CIFAR10_optimizers_pid" type="PythonConfigurationType" factoryName="Python" singleton="false" temporary="true" nameIsGenerated="true">
       <module name="Doptimizer" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -81,6 +86,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="CIFAR10_special_pid_comparing_parallel" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Doptimizer" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/PIDOptimizer-master/PIDOptimizer-master-new" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/PIDOptimizer-master/PIDOptimizer-master-new/CIFAR10_special_pid_comparing_parallel.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="Doptimizer" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -105,6 +132,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.CIFAR10_special_pid_comparing_parallel" />
         <item itemvalue="Python.CIFAR10_special_pid_comparing" />
         <item itemvalue="Python.CIFAR10_optimizers_pid" />
       </list>
@@ -133,7 +161,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
@@ -205,6 +235,11 @@
           <url>file://$PROJECT_DIR$/PIDOptimizer-master/PIDOptimizer-master-new/CIFAR10_optimizers_pid.py</url>
           <line>363</line>
           <option name="timeStamp" value="30" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/PIDOptimizer-master/PIDOptimizer-master-new/CIFAR10_special_pid_comparing_parallel.py</url>
+          <line>388</line>
+          <option name="timeStamp" value="32" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
