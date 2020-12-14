@@ -22,7 +22,7 @@ class BasicBlock(nn.Module):
             self.shortcut = nn.Sequential(
                 nn.Conv2d(in_planes, planes,
                           kernel_size=1, stride=stride, bias=False),
-                nn.BatchNorm2d(self.planes)
+                nn.BatchNorm2d(planes)
             )
 
     def forward(self, x):
@@ -139,7 +139,7 @@ class cifar10_ResNet(nn.Module):
         layers = []
         for stride in strides:
             layers.append(block(self.in_planes, planes, stride))
-            self.in_planes = planes * block.expansion
+            self.in_planes = planes
         return nn.Sequential(*layers)
 
     def forward(self, x):

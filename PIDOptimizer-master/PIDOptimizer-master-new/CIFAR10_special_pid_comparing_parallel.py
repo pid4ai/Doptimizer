@@ -32,8 +32,8 @@ from PIL import Image
 
 # Hyper Parameters
 num_classes = 10
-num_epochs = 30
-batch_size = 200
+num_epochs = 5
+batch_size = 32
 I = 3
 I = float(I)
 
@@ -129,15 +129,17 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, m
     print('optimizer_sign:' + str(optimizer_sign))
     if optimizer_sign == 0:
         optimizer = special_pid.Adamoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum[0])
-    elif optimizer_sign == 1:
+    elif  optimizer_sign == 1:
+        optimizer = special_pid.RMSpropoptimzer(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum[0])
+    elif optimizer_sign == 2:
         optimizer = special_pid.Adapidoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
                                                      momentum=momentum, I=I, D=derivative)
         oldnet_sign = True
-    elif optimizer_sign == 2:
+    elif optimizer_sign == 3:
         optimizer = special_pid.double_Adapidoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
                                                         momentum=momentum, I=I, D=derivative)
         oldnet_sign = True
-    elif optimizer_sign == 3:
+    elif optimizer_sign == 4:
         optimizer = special_pid.PIDoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
                                                         momentum=momentum, I=I, D=derivative)
         oldnet_sign = True
@@ -193,7 +195,8 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, m
                          train_acc_log.avg))
                 training_data['train_loss'].append(train_loss_log.avg.detach().cpu().numpy())
                 training_data['train_acc'].append(train_acc_log.avg.detach().cpu().numpy())
-                training_data['ds'].append(ds[0])
+                if optimizer_sign == 2:
+                    training_data['ds'].append(ds[0])
         # Test the Model
         net.eval()
         correct = 0
@@ -225,7 +228,7 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, m
 
 
 'Algorithms that can be choosed'
-algorithm_labels = ['0.Adam', '1.single_Adapid', '2.double_Adapid', '3.PID']
+algorithm_labels = ['0.Adam', '1.RMSprop', '2.single_Adapid', '3.double_Adapid', '4.PID']
 
 task = int(input('please input a task, 0 for algorithm comparing, 1 for learning rate modify, '
                  '2 for derivative parameter modify,  3 for momentum parameter (beta) modify \n'))

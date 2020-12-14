@@ -59,6 +59,51 @@ class Adamoptimizer(Optimizer):
 
         return loss
 
+
+class RMSpropoptimizer(Optimizer):
+    def __init__(self, params, lr=required, momentum=0.9, beta=0.99, weight_decay=0,epsilon=0.0000001):
+        defaults = dict(lr=lr, momentum=momentum, beta=beta, weight_decay=weight_decay, epsilon=epsilon)
+
+        super(RMSpropoptimizer, self).__init__(params, defaults)
+
+    def __setstate__(self, state):
+        super(RMSpropoptimizer, self).__setstate__(state)
+
+    def step(self, closure=None):
+        """Performs a single optimization step.
+        Arguments:
+            closure (callable, optional): A closure that reevaluates the model
+                and returns the loss.
+        """
+        loss = None
+        if closure is not None:
+            loss = closure()
+
+        for group in self.param_groups:
+            weight_decay = group['weight_decay']
+            momentum = group['momentum']
+            epsilon = group['epsilon']
+            beta = group['beta']
+            for p in group['params']:
+                if p.grad is None:
+                    continue
+                d_p = p.grad.data
+                param_state = self.state[p]
+                if weight_decay != 0:
+                    d_p.add_(weight_decay, p.data)
+                if 'v_buffer' not in param_state:
+                    param_state['v_buffer'] = (1-beta) * (d_p.detach() ** 2)
+                    param_state['time_buffer'] = 1
+                else:
+                    param_state['v_buffer'] = param_state['v_buffer'] * beta + (1 - beta) * (d_p.detach() ** 2)
+                    param_state['time_buffer'] += 1
+                v_buf = param_state['v_buffer'] / (1 - beta ** param_state['time_buffer'])
+
+                p.data.add_(-group['lr'], d_p / (v_buf ** 0.5 + epsilon))
+
+        return loss
+
+
 class Adapidoptimizer(Optimizer):
     def __init__(self, params, lr=required, beta=0.99, momentum=[0.9, 0.9],
                  epsilon=0.0000001, weight_decay=0, I=5., D=10.):
