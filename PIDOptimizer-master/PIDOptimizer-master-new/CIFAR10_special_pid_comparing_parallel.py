@@ -28,6 +28,7 @@ from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
 from DNN_models import cifar10_CNN, cifar10_DenseNet, cifar10_ResNet18
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
+from PIL import Image
 
 # Hyper Parameters
 num_classes = 10
@@ -61,7 +62,17 @@ test_image_labels = np.array(dict[b'labels'])
 images = np.array(images)
 image_labels = np.array(image_labels)
 images = np.reshape(images, [-1, 3, 32, 32])
+images = images.transpose((0, 2, 3, 1))
+resized_images = []
+for i in range(len(images)):
+    resized_images.append(np.array(Image.fromarray(images[i]).resize((224,224), Image.BICUBIC)))
+images = np.array(resized_images).transpose((0, 3, 1, 2))
 test_images = np.reshape(test_images, [-1, 3, 32, 32])
+test_images = test_images.transpose((0, 2, 3, 1))
+resized_images = []
+for i in range(len(test_images)):
+    resized_images.append(np.array(Image.fromarray(test_images[i]).resize((224,224), Image.BICUBIC)))
+test_images = np.array(resized_images).transpose((0, 3, 1, 2))
 print(len(images))
 
 class cifar10_dataset(torch.utils.data.Dataset):
@@ -135,7 +146,7 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, m
     if oldnet_sign:
         torch.save(net, 'net1.pkl')
         old_net = torch.load('net1.pkl')
-
+    summary(net, (3,224,224))
     # Train the Model
     for epoch in range(num_epochs):
 

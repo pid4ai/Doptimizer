@@ -238,8 +238,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/PIDOptimizer-master/PIDOptimizer-master-new/CIFAR10_special_pid_comparing_parallel.py</url>
-          <line>388</line>
+          <line>399</line>
           <option name="timeStamp" value="32" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/PIDOptimizer-master/PIDOptimizer-master-new/CIFAR10_special_pid_comparing_parallel.py</url>
+          <line>79</line>
+          <option name="timeStamp" value="34" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
