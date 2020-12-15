@@ -130,7 +130,7 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, m
     if optimizer_sign == 0:
         optimizer = special_pid.Adamoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum[0])
     elif  optimizer_sign == 1:
-        optimizer = special_pid.RMSpropoptimzer(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum[0])
+        optimizer = special_pid.RMSpropoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum[0])
     elif optimizer_sign == 2:
         optimizer = special_pid.Adapidoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
                                                      momentum=momentum, I=I, D=derivative)
