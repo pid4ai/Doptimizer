@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="10cfc1f8-1342-4c32-93ff-d0d692d095a6" name="Default Changelist" comment="" />
+    <list default="true" id="76896cee-6279-4f82-89a1-bf9c39669879" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -11,24 +11,7 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="JupyterTrust" id="8ba3f793-3e10-447b-820e-8874fd4c69c1" />
-  <component name="ProjectId" id="1lBm93yPOeRfE9u2AEpxM8if8Rk" />
-  <component name="ProjectViewState">
-    <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showLibraryContents" value="true" />
-  </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/PIDOptimizer-master/PIDOptimizer-master-new" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
-  </component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="E:\files\programs\Gitkraken\Doptimizer\PIDOptimizer-master\PIDOptimizer-master-new" />
-    </key>
-  </component>
+  <component name="ProjectId" id="1lfm3UeFXMfed6Rp6vPtPBdqB4G" />
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
@@ -41,33 +24,7 @@
       </list>
     </option>
   </component>
-<<<<<<< Updated upstream
-  <component name="RunManager" selected="Python.CIFAR10_special_pid_comparing_parallel">
-=======
-  <component name="RunManager" selected="Python.CIFAR10_special_pid_comparing">
->>>>>>> Stashed changes
-    <configuration name="CIFAR10_optimizers_pid" type="PythonConfigurationType" factoryName="Python" singleton="false" temporary="true" nameIsGenerated="true">
-      <module name="Doptimizer" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/PIDOptimizer-master/PIDOptimizer-master-new" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/PIDOptimizer-master/PIDOptimizer-master-new/CIFAR10_optimizers_pid.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager">
     <configuration name="CIFAR10_special_pid_comparing" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Doptimizer" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -76,58 +33,13 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/PIDOptimizer-master/PIDOptimizer-master-new" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/PIDOptimizer-master/PIDOptimizer-master-new/CIFAR10_special_pid_comparing.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/CIFAR10_special_pid_comparing.py" />
       <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="true" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="CIFAR10_special_pid_comparing_parallel" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="Doptimizer" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/PIDOptimizer-master/PIDOptimizer-master-new" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/PIDOptimizer-master/PIDOptimizer-master-new/CIFAR10_special_pid_comparing_parallel.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="true" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
-      <module name="Doptimizer" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
       <option name="REDIRECT_INPUT" value="false" />
@@ -136,136 +48,32 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.CIFAR10_special_pid_comparing_parallel" />
         <item itemvalue="Python.CIFAR10_special_pid_comparing" />
-        <item itemvalue="Python.CIFAR10_optimizers_pid" />
       </list>
     </recent_temporary>
   </component>
-  <component name="SpellCheckerSettings" BundledDictionaries="0" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" Dictionaries="0" CorrectionsLimit="5" DefaultDictionary="application-level" UseSingleDictionary="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="10cfc1f8-1342-4c32-93ff-d0d692d095a6" name="Default Changelist" comment="" />
-      <created>1607078705253</created>
+      <changelist id="76896cee-6279-4f82-89a1-bf9c39669879" name="Default Changelist" comment="" />
+      <created>1607996321265</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1607078705253</updated>
-      <workItem from="1607078707137" duration="212000" />
+      <updated>1607996321265</updated>
     </task>
     <servers />
-  </component>
-  <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="1174" y="358" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1607134399143">
-      <screen x="0" y="0" width="3440" height="1400" />
-    </state>
-    <state x="1174" y="358" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.3440.1400/3440.-661.1440.2520@0.0.3440.1400" timestamp="1607134399143" />
-    <state width="1419" height="640" key="GridCell.Tab.0.bottom" timestamp="1607262772386">
-      <screen x="3440" y="-661" width="1440" height="2520" />
-    </state>
-    <state width="1340" height="266" key="GridCell.Tab.0.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1607078918279" />
-    <state width="3419" height="337" key="GridCell.Tab.0.bottom/0.0.3440.1400/3440.-661.1440.2520@0.0.3440.1400" timestamp="1607213390383" />
-    <state width="1419" height="640" key="GridCell.Tab.0.bottom/0.0.3440.1400/3440.-661.1440.2520@3440.-661.1440.2520" timestamp="1607262772386" />
-    <state width="1419" height="640" key="GridCell.Tab.0.center" timestamp="1607262772386">
-      <screen x="3440" y="-661" width="1440" height="2520" />
-    </state>
-    <state width="1340" height="266" key="GridCell.Tab.0.center/0.0.2560.1400@0.0.2560.1400" timestamp="1607078918279" />
-    <state width="3419" height="337" key="GridCell.Tab.0.center/0.0.3440.1400/3440.-661.1440.2520@0.0.3440.1400" timestamp="1607213390383" />
-    <state width="1419" height="640" key="GridCell.Tab.0.center/0.0.3440.1400/3440.-661.1440.2520@3440.-661.1440.2520" timestamp="1607262772386" />
-    <state width="1419" height="640" key="GridCell.Tab.0.left" timestamp="1607262772386">
-      <screen x="3440" y="-661" width="1440" height="2520" />
-    </state>
-    <state width="1340" height="266" key="GridCell.Tab.0.left/0.0.2560.1400@0.0.2560.1400" timestamp="1607078918279" />
-    <state width="3419" height="337" key="GridCell.Tab.0.left/0.0.3440.1400/3440.-661.1440.2520@0.0.3440.1400" timestamp="1607213390383" />
-    <state width="1419" height="640" key="GridCell.Tab.0.left/0.0.3440.1400/3440.-661.1440.2520@3440.-661.1440.2520" timestamp="1607262772386" />
-    <state width="1419" height="640" key="GridCell.Tab.0.right" timestamp="1607262772386">
-      <screen x="3440" y="-661" width="1440" height="2520" />
-    </state>
-    <state width="1340" height="266" key="GridCell.Tab.0.right/0.0.2560.1400@0.0.2560.1400" timestamp="1607078918279" />
-    <state width="3419" height="337" key="GridCell.Tab.0.right/0.0.3440.1400/3440.-661.1440.2520@0.0.3440.1400" timestamp="1607213390383" />
-    <state width="1419" height="640" key="GridCell.Tab.0.right/0.0.3440.1400/3440.-661.1440.2520@3440.-661.1440.2520" timestamp="1607262772386" />
-    <state width="1419" height="640" key="GridCell.Tab.1.bottom" timestamp="1607266432529">
-      <screen x="3440" y="-661" width="1440" height="2520" />
-    </state>
-    <state width="3419" height="640" key="GridCell.Tab.1.bottom/0.0.3440.1400/3440.-661.1440.2520@0.0.3440.1400" timestamp="1607261139647" />
-    <state width="1419" height="640" key="GridCell.Tab.1.bottom/0.0.3440.1400/3440.-661.1440.2520@3440.-661.1440.2520" timestamp="1607266432529" />
-    <state width="1419" height="640" key="GridCell.Tab.1.center" timestamp="1607266432529">
-      <screen x="3440" y="-661" width="1440" height="2520" />
-    </state>
-    <state width="3419" height="640" key="GridCell.Tab.1.center/0.0.3440.1400/3440.-661.1440.2520@0.0.3440.1400" timestamp="1607261139647" />
-    <state width="1419" height="640" key="GridCell.Tab.1.center/0.0.3440.1400/3440.-661.1440.2520@3440.-661.1440.2520" timestamp="1607266432529" />
-    <state width="1419" height="640" key="GridCell.Tab.1.left" timestamp="1607266432529">
-      <screen x="3440" y="-661" width="1440" height="2520" />
-    </state>
-    <state width="3419" height="640" key="GridCell.Tab.1.left/0.0.3440.1400/3440.-661.1440.2520@0.0.3440.1400" timestamp="1607261139647" />
-    <state width="1419" height="640" key="GridCell.Tab.1.left/0.0.3440.1400/3440.-661.1440.2520@3440.-661.1440.2520" timestamp="1607266432529" />
-    <state width="1419" height="640" key="GridCell.Tab.1.right" timestamp="1607266432529">
-      <screen x="3440" y="-661" width="1440" height="2520" />
-    </state>
-    <state width="3419" height="640" key="GridCell.Tab.1.right/0.0.3440.1400/3440.-661.1440.2520@0.0.3440.1400" timestamp="1607261139647" />
-    <state width="1419" height="640" key="GridCell.Tab.1.right/0.0.3440.1400/3440.-661.1440.2520@3440.-661.1440.2520" timestamp="1607266432529" />
-    <state x="1223" y="345" key="SettingsEditor" timestamp="1607134056779">
-      <screen x="0" y="0" width="3440" height="1400" />
-    </state>
-    <state x="1223" y="345" key="SettingsEditor/0.0.3440.1400/3440.-661.1440.2520@0.0.3440.1400" timestamp="1607134056779" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/PIDOptimizer-master/PIDOptimizer-master-new/CIFAR10_optimizers_pid.py</url>
-          <line>366</line>
-          <option name="timeStamp" value="29" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/PIDOptimizer-master/PIDOptimizer-master-new/CIFAR10_optimizers_pid.py</url>
-          <line>363</line>
-          <option name="timeStamp" value="30" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-<<<<<<< Updated upstream
-          <url>file://$PROJECT_DIR$/PIDOptimizer-master/PIDOptimizer-master-new/CIFAR10_special_pid_comparing_parallel.py</url>
-          <line>399</line>
-          <option name="timeStamp" value="32" />
-        </line-breakpoint>
-<<<<<<< Updated upstream
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/PIDOptimizer-master/PIDOptimizer-master-new/CIFAR10_special_pid_comparing_parallel.py</url>
-          <line>79</line>
-          <option name="timeStamp" value="34" />
-        </line-breakpoint>
-=======
-=======
-          <url>file://$PROJECT_DIR$/PIDOptimizer-master/PIDOptimizer-master-new/CIFAR10_special_pid_comparing.py</url>
-          <line>369</line>
-          <option name="timeStamp" value="32" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/PIDOptimizer-master/PIDOptimizer-master-new/CIFAR10_special_pid_comparing.py</url>
-          <line>372</line>
-          <option name="timeStamp" value="33" />
-        </line-breakpoint>
->>>>>>> Stashed changes
->>>>>>> Stashed changes
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
