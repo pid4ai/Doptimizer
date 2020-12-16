@@ -28,17 +28,18 @@ from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
 from DNN_models import cifar10_CNN, cifar10_DenseNet, cifar10_ResNet18
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
+from PIL import Image
 
 # Hyper Parameters
 num_classes = 10
-num_epochs = 30
-batch_size = 200
+num_epochs = 20
+batch_size = 100
 I = 3
 I = float(I)
 
 # good set of params: learning_rates4 adam/doublepid [0.005,0.0006], i=1,d=1
 
-
+model_sign = int(input('please input model sign: \n 0 for Densenet, 1 for CNN, 2 for ResNet18 \nmodel_sign:'))
  #cifar10 dataset
 dataset_path = 'cifar-10-batches-py/'
 for i in range(1,6):
@@ -60,7 +61,18 @@ images = np.array(images)
 image_labels = np.array(image_labels)
 images = np.reshape(images, [-1, 3, 32, 32])
 test_images = np.reshape(test_images, [-1, 3, 32, 32])
-print(len(images))
+if model_sign == 2:
+    images = images.transpose((0, 2, 3, 1))
+    resized_images = []
+    for i in range(len(images)):
+        resized_images.append(np.array(Image.fromarray(images[i]).resize((224, 224), Image.BICUBIC)))
+    images = np.array(resized_images).transpose((0, 3, 1, 2))
+    test_images = test_images.transpose((0, 2, 3, 1))
+    resized_images = []
+    for i in range(len(test_images)):
+        resized_images.append(np.array(Image.fromarray(test_images[i]).resize((224, 224), Image.BICUBIC)))
+    test_images = np.array(resized_images).transpose((0, 3, 1, 2))
+print('dataset extract completed,there are' + str(len(images)) + 'images')
 
 class cifar10_dataset(torch.utils.data.Dataset):
     def __init__(self):
@@ -92,7 +104,7 @@ BGD_loader = torch.utils.data.DataLoader(dataset=cifar10_dataset(),batch_size=le
 
 #testing functon
 def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, momentum=[0.9, 0.9]):
-    training_data = {'train_loss':[], 'val_loss':[], 'train_acc':[], 'val_acc':[]}
+    training_data = {'train_loss': [], 'val_loss': [], 'train_acc': [], 'val_acc': [], 'ds': [], 'is': []}
     if model_sign == 0:
         net = cifar10_DenseNet(num_classes)
         padding_sign = True
@@ -116,23 +128,25 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, m
     print('optimizer_sign:' + str(optimizer_sign))
     if optimizer_sign == 0:
         optimizer = special_pid.Adamoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum[0])
-    elif optimizer_sign == 1:
+    elif  optimizer_sign == 1:
+        optimizer = special_pid.RMSpropoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum[0])
+    elif optimizer_sign == 2:
         optimizer = special_pid.Adapidoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
                                                      momentum=momentum, I=I, D=derivative)
         oldnet_sign = True
-    elif optimizer_sign == 2:
+    elif optimizer_sign == 3:
         optimizer = special_pid.double_Adapidoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
                                                         momentum=momentum, I=I, D=derivative)
         oldnet_sign = True
-    elif optimizer_sign == 3:
+    elif optimizer_sign == 4:
         optimizer = special_pid.PIDoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
                                                         momentum=momentum, I=I, D=derivative)
         oldnet_sign = True
     else:
         raise ValueError('Not correct algorithm symbol')
     if oldnet_sign:
-        torch.save(net, 'net.pkl')
-        old_net = torch.load('net.pkl')
+        torch.save(net, 'net1.pkl')
+        old_net = torch.load('net1.pkl')
 
     # Train the Model
     for epoch in range(num_epochs):
@@ -141,6 +155,7 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, m
         train_acc_log = AverageMeter()
         val_loss_log = AverageMeter()
         val_acc_log = AverageMeter()
+        ds = []
         for i, (images, labels) in enumerate(train_loader):
             # Convert torch tensor to Variable
             if gpu_sign != 0:
@@ -164,9 +179,12 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, m
                 parameters  = list(old_net.parameters())
                 old_grads = [parameter.grad.detach() for parameter in parameters]
                 optimizer.get_oldgrad(old_grads)
-                torch.save(net, 'net.pkl')
-                old_net = torch.load('net.pkl')
-            optimizer.step()
+                torch.save(net, 'net1.pkl')
+                old_net = torch.load('net1.pkl')
+            if optimizer_sign != 3:
+                optimizer.step()
+            else:
+                ds.append(optimizer.step()[0])
             prec1, prec5 = accuracy(outputs.data, labels.data, topk=(1, 5))
             train_loss_log.update(train_loss.data, images.size(0))
             train_acc_log.update(prec1, images.size(0))
@@ -177,7 +195,10 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, m
                          train_acc_log.avg))
                 training_data['train_loss'].append(train_loss_log.avg.detach().cpu().numpy())
                 training_data['train_acc'].append(train_acc_log.avg.detach().cpu().numpy())
-
+                if optimizer_sign == 3:
+                    training_data['ds'].append(np.average(np.array([i[0] for i in ds])))
+                    training_data['is'].append(np.average(np.array([i[1] for i in ds])))
+                    ds = []
         # Test the Model
         net.eval()
         correct = 0
@@ -209,7 +230,7 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, m
 
 
 'Algorithms that can be choosed'
-algorithm_labels = ['0.Adam', '1.single_Adapid', '2.double_Adapid', '3.PID']
+algorithm_labels = ['0.Adam', '1.RMSprop', '2.single_Adapid', '3.double_Adapid', '4.PID']
 
 task = int(input('please input a task, 0 for algorithm comparing, 1 for learning rate modify, '
                  '2 for derivative parameter modify,  3 for momentum parameter (beta) modify \n'))
@@ -248,14 +269,15 @@ elif task == 3:
 else:
     raise ValueError('not correct task symbol')
 
-model_sign = int(input('please input model sign: \n 0 for Densenet, 1 for CNN, 2 for ResNet18 \nmodel_sign:'))
-show_symbol = eval(input('please choose what to show, 0 for accuracy, 1 for loss, 2 for training_err, support multiple chioce. please input an list \n'))
+show_symbol = eval(input('please choose what to show, 0 for accuracy, 1 for loss, 2 for training_err,'
+                         ' 3 for mean derivatives, 4 for mean integrate.3 and 4 only support algorithm 3.'
+                         ' support multiple chioce. please input an list \n'))
 for i in show_symbol:
     i = int(i)
-    if not(i == 0 or i == 1 or i == 2):
+    if not(i == 0 or i == 1 or i == 2 or i == 3 or i == 4):
         raise  ValueError('incorrect show symbol')
 
-shows = ['acc', 'loss', 'training_err']
+shows = ['acc', 'loss', 'training_err', 'mean_derivative', 'mean_integrate']
 models = ['DenseNet', 'CNN', 'ResNet']
 comparing_datas = [[] for i in show_symbol]
 comparing_data = [[] for i in show_symbol]
@@ -272,15 +294,23 @@ if task == 0:
                         comparing_data[a] = np.array(output['train_acc'])
                     elif show_symbol[a] == 1:
                         comparing_data[a] = np.array(output['train_loss'])
-                    else:
+                    elif show_symbol[a] == 2:
                         comparing_data[a] = 100 - np.array(output['train_acc'])
+                    elif show_symbol[a] == 3:
+                        comparing_data[a] = np.array(output['ds'])
+                    else:
+                        comparing_data[a] = np.array(output['is'])
                 else:
                     if show_symbol[a] == 0:
                         comparing_data[a] += np.array(output['train_acc'])
                     elif show_symbol[a] == 1:
                         comparing_data[a] += np.array(output['train_loss'])
-                    else:
+                    elif show_symbol[a] == 2:
                         comparing_data[a] += 100 - np.array(output['train_acc'])
+                    elif show_symbol[a] == 3:
+                        comparing_data[a] += np.array(output['ds'])
+                    else:
+                        comparing_data[a] += np.array(output['is'])
         for a in range(len(show_symbol)):
             comparing_datas[a].append(np.array(comparing_data[a]) / repeats)
             test_algorithm_labels[a].append(
@@ -297,15 +327,23 @@ elif task == 1:
                         comparing_data[a] = np.array(output['train_acc'])
                     elif show_symbol[a] == 1:
                         comparing_data[a] = np.array(output['train_loss'])
-                    else:
+                    elif show_symbol[a] == 2:
                         comparing_data[a] = 100 - np.array(output['train_acc'])
+                    elif show_symbol[a] == 3:
+                        comparing_data[a] = np.array(output['ds'])
+                    else:
+                        comparing_data[a] = np.array(output['is'])
                 else:
                     if show_symbol[a] == 0:
                         comparing_data[a] += np.array(output['train_acc'])
                     elif show_symbol[a] == 1:
                         comparing_data[a] += np.array(output['train_loss'])
-                    else:
+                    elif show_symbol[a] == 2:
                         comparing_data[a] += 100 - np.array(output['train_acc'])
+                    elif show_symbol[a] == 3:
+                        comparing_data[a] += np.array(output['ds'])
+                    else:
+                        comparing_data[a] += np.array(output['is'])
         for a in range(len(show_symbol)):
             comparing_datas[a].append(np.array(comparing_data[a]) / repeats)
             test_algorithm_labels[a].append(
@@ -322,15 +360,23 @@ elif task == 2:
                         comparing_data[a] = np.array(output['train_acc'])
                     elif show_symbol[a] == 1:
                         comparing_data[a] = np.array(output['train_loss'])
-                    else:
+                    elif show_symbol[a] == 2:
                         comparing_data[a] = 100 - np.array(output['train_acc'])
+                    elif show_symbol[a] == 3:
+                        comparing_data[a] = np.array(output['ds'])
+                    else:
+                        comparing_data[a] = np.array(output['is'])
                 else:
                     if show_symbol[a] == 0:
                         comparing_data[a] += np.array(output['train_acc'])
                     elif show_symbol[a] == 1:
                         comparing_data[a] += np.array(output['train_loss'])
-                    else:
+                    elif show_symbol[a] == 2:
                         comparing_data[a] += 100 - np.array(output['train_acc'])
+                    elif show_symbol[a] == 3:
+                        comparing_data[a] += np.array(output['ds'])
+                    else:
+                        comparing_data[a] += np.array(output['is'])
         for a in range(len(show_symbol)):
             comparing_datas[a].append(np.array(comparing_data[a]) / repeats)
             test_algorithm_labels[a].append(algorithm_labels[test_algorithm] + ' derivative=' + str(derivatives[i]))
@@ -346,29 +392,36 @@ elif task == 3:
                         comparing_data[a] = np.array(output['train_acc'])
                     elif show_symbol[a] == 1:
                         comparing_data[a] = np.array(output['train_loss'])
-                    else:
+                    elif show_symbol[a] == 2:
                         comparing_data[a] = 100 - np.array(output['train_acc'])
+                    elif show_symbol[a] == 3:
+                        comparing_data[a] = np.array(output['ds'])
+                    else:
+                        comparing_data[a] = np.array(output['is'])
                 else:
                     if show_symbol[a] == 0:
                         comparing_data[a] += np.array(output['train_acc'])
                     elif show_symbol[a] == 1:
                         comparing_data[a] += np.array(output['train_loss'])
-                    else:
+                    elif show_symbol[a] == 2:
                         comparing_data[a] += 100 - np.array(output['train_acc'])
+                    elif show_symbol[a] == 3:
+                        comparing_data[a] += np.array(output['ds'])
+                    else:
+                        comparing_data[a] += np.array(output['is'])
         for a in range(len(show_symbol)):
             comparing_datas[a].append(np.array(comparing_data[a]) / repeats)
             test_algorithm_labels[a].append(algorithm_labels[test_algorithm] + ' momentum=' + str(momentums[i]))
+save_sign = 10
 for a in range(len(show_symbol)):
     for i in range(len(comparing_datas[a])):
         plt.plot(range(len(comparing_datas[a][i])), comparing_datas[a][i])
     plt.legend(test_algorithm_labels[a])
 
     plt.title(models[model_sign] + ' CIFAR10, ' + shows[show_symbol[a]] + ' ,derivatives:' + str(derivatives))
-
+    plt.savefig('/home/chen/programs/Doptimizer/data/matplotlib/' + str(save_sign))
+    save_sign += 1
     plt.show()
     plt.cla()
 
 a = 0
-
-
-

@@ -232,7 +232,7 @@ class double_Adapidoptimizer(Optimizer):
             D = group['D']
             beta = group['beta']
             epsilon = group['epsilon']
-            ds = []
+            ds = [[],[]]
             for i in range(len(group['params'])):
                 p = group['params'][i]
                 if p.grad is None:
@@ -276,8 +276,10 @@ class double_Adapidoptimizer(Optimizer):
                     dv_buf = param_state['dv_buffer'] / (1 - beta ** param_state['time_buffer'])
                 p_grad = ((d_p.add_(I, I_buf))/(v_buf ** 0.5 + epsilon)).add(D, D_buf/(dv_buf ** 0.5 + epsilon))
                 p.data.add_(-group['lr'], p_grad)
-                ds.append(torch.mean(torch.abs(d)).detach().cpu().numpy())
-            ds = np.mean(np.array(ds))
+                ds[0].append(torch.mean(torch.abs(I_buf)).detach().cpu().numpy())
+                ds[1].append(torch.mean(torch.abs(D_buf)).detach().cpu().numpy())
+            ds[0] = np.mean(np.array(ds[0]))
+            ds[1] = np.mean(np.array(ds[1]))
         self.get_grad_symbol = False
 
         return ds, loss
