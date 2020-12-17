@@ -32,8 +32,8 @@ from PIL import Image
 
 # Hyper Parameters
 num_classes = 10
-num_epochs = 20
-batch_size = 100
+num_epochs = 15
+batch_size = 150
 I = 3
 I = float(I)
 
@@ -144,7 +144,7 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, m
         oldnet_sign = True
     else:
         raise ValueError('Not correct algorithm symbol')
-    if oldnet_sign:
+    if oldnet_sign and derivative != 0:
         torch.save(net, 'net1.pkl')
         old_net = torch.load('net1.pkl')
 
@@ -171,7 +171,7 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, m
             outputs = net(images)
             train_loss = criterion(outputs, labels)
             train_loss.backward()
-            if oldnet_sign:
+            if oldnet_sign and derivative != 0:
                 old_net.zero_grad()
                 old_outputs = old_net(images)
                 old_loss = criterion(old_outputs, labels)

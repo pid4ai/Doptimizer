@@ -1,6 +1,7 @@
 import torch
 import numpy as np
 from torch.optim.optimizer import Optimizer, required
+from DNN_models import cifar10_CNN, cifar10_DenseNet, cifar10_ResNet18
 
 
 
@@ -39,10 +40,10 @@ class Adamoptimizer(Optimizer):
                 if weight_decay != 0:
                     d_p.add_(weight_decay, p.data)
                 if 'v_buffer' not in param_state:
-                    param_state['v_buffer'] = (1-beta) * (d_p.detach() ** 2)
+                    param_state['v_buffer'] = (1-beta) * (d_p.clone() ** 2)
                     param_state['time_buffer'] = 1
                 else:
-                    param_state['v_buffer'] = param_state['v_buffer'] * beta + (1 - beta) * (d_p.detach() ** 2)
+                    param_state['v_buffer'] = param_state['v_buffer'] * beta + (1 - beta) * (d_p.clone() ** 2)
                     param_state['time_buffer'] += 1
                 v_buf = param_state['v_buffer'] / (1 - beta ** param_state['time_buffer'])
                 if momentum != 0:
@@ -92,10 +93,10 @@ class RMSpropoptimizer(Optimizer):
                 if weight_decay != 0:
                     d_p.add_(weight_decay, p.data)
                 if 'v_buffer' not in param_state:
-                    param_state['v_buffer'] = (1-beta) * (d_p.detach() ** 2)
+                    param_state['v_buffer'] = (1-beta) * (d_p.clone() ** 2)
                     param_state['time_buffer'] = 1
                 else:
-                    param_state['v_buffer'] = param_state['v_buffer'] * beta + (1 - beta) * (d_p.detach() ** 2)
+                    param_state['v_buffer'] = param_state['v_buffer'] * beta + (1 - beta) * (d_p.clone() ** 2)
                     param_state['time_buffer'] += 1
                 v_buf = param_state['v_buffer'] / (1 - beta ** param_state['time_buffer'])
 
@@ -130,7 +131,7 @@ class Adapidoptimizer(Optimizer):
         if len(self.param_groups) != 1:
             raise ValueError('do not support multiple nets')
 
-        if self.get_grad_symbol == False:
+        if self.param_groups[0]['D'] != 0 and self.get_grad_symbol == False:
             raise ValueError('old grad not got')
         loss = None
 
@@ -160,31 +161,34 @@ class Adapidoptimizer(Optimizer):
                 else:
                     param_state['time_buffer'] += 1
                 if 'v_buffer' not in param_state:
-                    param_state['v_buffer'] = (d_p.detach() ** 2) * (1 - beta)
+                    param_state['v_buffer'] = (d_p.clone() ** 2) * (1 - beta)
                     v_buf = param_state['v_buffer'] / (1 - beta ** param_state['time_buffer'])
                 else:
-                    param_state['v_buffer'] = param_state['v_buffer'] * beta + (d_p.detach() ** 2) * (1 - beta)
+                    param_state['v_buffer'] = param_state['v_buffer'] * beta + (d_p.clone() ** 2) * (1 - beta)
                     v_buf = param_state['v_buffer'] / (1 - beta ** param_state['time_buffer'])
                 if 'I_buffer' not in param_state:
                     I_buf = param_state['I_buffer'] = torch.zeros_like(p.data)
-                    I_buf.mul_(momentum[0]).add_(1 - momentum[0], d_p.detach())
+                    I_buf.mul_(momentum[0]).add_(1 - momentum[0], d_p.clone())
                 else:
                     I_buf = param_state['I_buffer']
-                    I_buf.mul_(momentum[0]).add_(1 - momentum[0], d_p.detach())
-
-                if 'D_buffer' not in param_state:
-                    D_buf = param_state['D_buffer'] = torch.zeros_like(p.data)
-                    D_buf.mul_(momentum[1]).add_(1 - momentum[1], d_p.detach() - self.old_grads[i])
+                    I_buf.mul_(momentum[0]).add_(1 - momentum[0], d_p.clone())
+                if D != 0:
+                    if 'D_buffer' not in param_state:
+                        D_buf = param_state['D_buffer'] = torch.zeros_like(p.data)
+                        D_buf.mul_(momentum[1]).add_(1 - momentum[1], d_p.clone() - self.old_grads[i])
+                    else:
+                        D_buf = param_state['D_buffer']
+                        D_buf.mul_(momentum[1]).add_(1 - momentum[1], d_p.clone() - self.old_grads[i])
+                    if 'dv_buffer' not in param_state:
+                        param_state['dv_buffer'] = ((d_p.clone() - self.old_grads[i]) ** 2) * (1 - beta)
+                        dv_buf = param_state['dv_buffer'] / (1 - beta ** param_state['time_buffer'])
+                    else:
+                        param_state['dv_buffer'] = param_state['dv_buffer'] * beta + (
+                                    (d_p.clone() - self.old_grads[i]) ** 2) * (1 - beta)
+                        dv_buf = param_state['dv_buffer'] / (1 - beta ** param_state['time_buffer'])
+                    p_grad = (d_p.add_(I, I_buf).add(D, D_buf)) / (v_buf ** 0.5 + epsilon)
                 else:
-                    D_buf = param_state['D_buffer']
-                    D_buf.mul_(momentum[1]).add_(1 - momentum[1], d_p.detach() - self.old_grads[i])
-                if 'dv_buffer' not in param_state:
-                    param_state['dv_buffer'] = ((d_p.detach() - self.old_grads[i]) ** 2) * (1 - beta)
-                    dv_buf = param_state['dv_buffer'] / (1 - beta ** param_state['time_buffer'])
-                else:
-                    param_state['dv_buffer'] = param_state['dv_buffer'] * beta + ((d_p.detach() - self.old_grads[i]) ** 2) * (1 - beta)
-                    dv_buf = param_state['dv_buffer'] / (1 - beta ** param_state['time_buffer'])
-                p_grad = (d_p.add_(I, I_buf).add(D, D_buf))/(v_buf ** 0.5 + epsilon)
+                    p_grad = (d_p.clone().add_(I, I_buf)) / (v_buf ** 0.5 + epsilon)
                 p.data.add_(-group['lr'], p_grad)
 
         self.get_grad_symbol = False
@@ -217,7 +221,7 @@ class double_Adapidoptimizer(Optimizer):
         if len(self.param_groups) != 1:
             raise ValueError('do not support multiple nets')
 
-        if self.get_grad_symbol == False:
+        if self.param_groups[0]['D'] != 0 and self.get_grad_symbol == False:
             raise ValueError('old grad not got')
         loss = None
 
@@ -248,36 +252,40 @@ class double_Adapidoptimizer(Optimizer):
                 else:
                     param_state['time_buffer'] += 1
                 if 'v_buffer' not in param_state:
-                    param_state['v_buffer'] = (d_p.detach() ** 2) * (1 - beta)
+                    param_state['v_buffer'] = (d_p.clone() ** 2) * (1 - beta)
                     v_buf = param_state['v_buffer'] / (1 - beta ** param_state['time_buffer'])
                 else:
-                    param_state['v_buffer'] = param_state['v_buffer'] * beta + (d_p.detach() ** 2) * (1 - beta)
+                    param_state['v_buffer'] = param_state['v_buffer'] * beta + (d_p.clone() ** 2) * (1 - beta)
                     v_buf = param_state['v_buffer'] / (1 - beta ** param_state['time_buffer'])
                 if 'I_buffer' not in param_state:
                     I_buf = param_state['I_buffer'] = torch.zeros_like(p.data)
-                    I_buf.mul_(momentum[0]).add_(1 - momentum[0], d_p.detach())
+                    I_buf.mul_(momentum[0]).add_(1 - momentum[0], d_p.clone())
                 else:
                     I_buf = param_state['I_buffer']
-                    I_buf.mul_(momentum[0]).add_(1 - momentum[0], d_p.detach())
-
-                if 'D_buffer' not in param_state:
-                    D_buf = param_state['D_buffer'] = torch.zeros_like(p.data)
-                    D_buf.mul_(momentum[1]).add_(1 - momentum[1], d_p.detach() - self.old_grads[i])
-                    d = torch.zeros_like(d_p)
+                    I_buf.mul_(momentum[0]).add_(1 - momentum[0], d_p.clone())
+                if D != 0:
+                    if 'D_buffer' not in param_state:
+                        D_buf = param_state['D_buffer'] = torch.zeros_like(p.data)
+                        D_buf.mul_(momentum[1]).add_(1 - momentum[1], d_p.clone() - self.old_grads[i])
+                        d = torch.zeros_like(d_p)
+                    else:
+                        D_buf = param_state['D_buffer']
+                        d = d_p.clone() - self.old_grads[i]
+                        D_buf.mul_(momentum[1]).add_(1 - momentum[1], d)
+                    if 'dv_buffer' not in param_state:
+                        param_state['dv_buffer'] = ((d_p.clone() - self.old_grads[i]) ** 2) * (1 - beta)
+                        dv_buf = param_state['dv_buffer'] / (1 - beta ** param_state['time_buffer'])
+                    else:
+                        param_state['dv_buffer'] = param_state['dv_buffer'] * beta + (
+                                    (d_p.clone() - self.old_grads[i]) ** 2) * (1 - beta)
+                        dv_buf = param_state['dv_buffer'] / (1 - beta ** param_state['time_buffer'])
+                    p_grad = ((d_p.add_(I, I_buf)) / (v_buf ** 0.5 + epsilon)).add(D, D_buf / (dv_buf ** 0.5 + epsilon))
                 else:
-                    D_buf = param_state['D_buffer']
-                    d = d_p.detach() - self.old_grads[i]
-                    D_buf.mul_(momentum[1]).add_(1 - momentum[1], d)
-                if 'dv_buffer' not in param_state:
-                    param_state['dv_buffer'] = ((d_p.detach() - self.old_grads[i]) ** 2) * (1 - beta)
-                    dv_buf = param_state['dv_buffer'] / (1 - beta ** param_state['time_buffer'])
-                else:
-                    param_state['dv_buffer'] = param_state['dv_buffer'] * beta + ((d_p.detach() - self.old_grads[i]) ** 2) * (1 - beta)
-                    dv_buf = param_state['dv_buffer'] / (1 - beta ** param_state['time_buffer'])
-                p_grad = ((d_p.add_(I, I_buf))/(v_buf ** 0.5 + epsilon)).add(D, D_buf/(dv_buf ** 0.5 + epsilon))
+                    p_grad = (d_p.clone().add_(I, I_buf)) / (v_buf ** 0.5 + epsilon)
                 p.data.add_(-group['lr'], p_grad)
                 ds[0].append(torch.mean(torch.abs(I_buf)).detach().cpu().numpy())
-                ds[1].append(torch.mean(torch.abs(D_buf)).detach().cpu().numpy())
+                if D != 0:
+                    ds[1].append(torch.mean(torch.abs(D_buf)).detach().cpu().numpy())
             ds[0] = np.mean(np.array(ds[0]))
             ds[1] = np.mean(np.array(ds[1]))
         self.get_grad_symbol = False
@@ -310,7 +318,7 @@ class PIDoptimizer(Optimizer):
         if len(self.param_groups) != 1:
             raise ValueError('do not support multiple nets')
 
-        if self.get_grad_symbol == False:
+        if self.param_groups[0]['D'] != 0 and self.get_grad_symbol == False:
             raise ValueError('old grad not got')
         loss = None
 
@@ -341,18 +349,20 @@ class PIDoptimizer(Optimizer):
                     param_state['time_buffer'] += 1
                 if 'I_buffer' not in param_state:
                     I_buf = param_state['I_buffer'] = torch.zeros_like(p.data)
-                    I_buf.mul_(momentum[0]).add_(1 - momentum[0], d_p.detach())
+                    I_buf.mul_(momentum[0]).add_(1 - momentum[0], d_p.clone())
                 else:
                     I_buf = param_state['I_buffer']
-                    I_buf.mul_(momentum[0]).add_(1 - momentum[0], d_p.detach())
-
-                if 'D_buffer' not in param_state:
-                    D_buf = param_state['D_buffer'] = torch.zeros_like(p.data)
-                    D_buf.mul_(momentum[1]).add_(1 - momentum[1], d_p.detach() - self.old_grads[i])
+                    I_buf.mul_(momentum[0]).add_(1 - momentum[0], d_p.clone())
+                if D != 0:
+                    if 'D_buffer' not in param_state:
+                        D_buf = param_state['D_buffer'] = torch.zeros_like(p.data)
+                        D_buf.mul_(momentum[1]).add_(1 - momentum[1], d_p.clone() - self.old_grads[i])
+                    else:
+                        D_buf = param_state['D_buffer']
+                        D_buf.mul_(momentum[1]).add_(1 - momentum[1], d_p.clone() - self.old_grads[i])
+                    p_grad = (d_p.add_(I, I_buf).add(D, D_buf))
                 else:
-                    D_buf = param_state['D_buffer']
-                    D_buf.mul_(momentum[1]).add_(1 - momentum[1], d_p.detach() - self.old_grads[i])
-                p_grad = (d_p.add_(I, I_buf).add(D, D_buf))
+                    p_grad = I_buf * I
                 p.data.add_(-group['lr'], p_grad)
 
         self.get_grad_symbol = False

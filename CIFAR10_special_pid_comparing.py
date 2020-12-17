@@ -32,8 +32,8 @@ from PIL import Image
 
 # Hyper Parameters
 num_classes = 10
-num_epochs = 20
-batch_size = 100
+num_epochs = 15
+batch_size = 150
 I = 3
 I = float(I)
 
@@ -145,8 +145,8 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, m
     else:
         raise ValueError('Not correct algorithm symbol')
     if oldnet_sign:
-        torch.save(net, 'net1.pkl')
-        old_net = torch.load('net1.pkl')
+        torch.save(net, 'net.pkl')
+        old_net = torch.load('net.pkl')
 
     # Train the Model
     for epoch in range(num_epochs):
@@ -179,8 +179,8 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, m
                 parameters  = list(old_net.parameters())
                 old_grads = [parameter.grad.detach() for parameter in parameters]
                 optimizer.get_oldgrad(old_grads)
-                torch.save(net, 'net1.pkl')
-                old_net = torch.load('net1.pkl')
+                torch.save(net, 'net.pkl')
+                old_net = torch.load('net.pkl')
             if optimizer_sign != 3:
                 optimizer.step()
             else:
@@ -412,7 +412,7 @@ elif task == 3:
         for a in range(len(show_symbol)):
             comparing_datas[a].append(np.array(comparing_data[a]) / repeats)
             test_algorithm_labels[a].append(algorithm_labels[test_algorithm] + ' momentum=' + str(momentums[i]))
-save_sign = 10
+save_sign = 20
 for a in range(len(show_symbol)):
     for i in range(len(comparing_datas[a])):
         plt.plot(range(len(comparing_datas[a][i])), comparing_datas[a][i])
@@ -425,3 +425,9 @@ for a in range(len(show_symbol)):
     plt.cla()
 
 a = 0
+
+
+
+
+
+

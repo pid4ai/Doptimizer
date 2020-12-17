@@ -2,10 +2,10 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="91865ab8-bed7-41aa-9098-ce190caa017c" name="CHEN" url="http://10.1.76.122">
+      <webServer id="c3c21372-d31c-4130-9a3e-0dc815a7039e" name="Doptimizer" url="http://10.1.76.122">
         <fileTransfer rootFolder="/home/chen/programs" accessType="SFTP" host="10.1.76.122" port="22" sshConfigId="a19a670d-1470-4fc6-83fb-a74f4a67a66d" sshConfig="chen@10.1.76.122:22 password">
           <advancedOptions>
-            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+            <advancedOptions controlEncoding="utf-8" dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
         </fileTransfer>
       </webServer>

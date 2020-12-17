@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="CHEN" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" serverName="chen@10.1.76.122:22" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
-      <paths name="CHEN">
+      <paths name="Doptimizer">
         <serverdata>
           <mappings>
             <mapping deploy="/Doptimizer" local="$PROJECT_DIR$" web="/" />
           </mappings>
-          <excludedPaths>
-            <excludedPath path="/Doptimizer" />
-          </excludedPaths>
+        </serverdata>
+      </paths>
+      <paths name="chen@10.1.76.122:22">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/chen/programs/Doptimizer" local="$PROJECT_DIR$" />
+          </mappings>
         </serverdata>
       </paths>
     </serverData>
