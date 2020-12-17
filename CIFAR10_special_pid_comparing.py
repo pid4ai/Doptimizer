@@ -412,7 +412,7 @@ elif task == 3:
         for a in range(len(show_symbol)):
             comparing_datas[a].append(np.array(comparing_data[a]) / repeats)
             test_algorithm_labels[a].append(algorithm_labels[test_algorithm] + ' momentum=' + str(momentums[i]))
-save_sign = 20
+save_sign = 10
 for a in range(len(show_symbol)):
     for i in range(len(comparing_datas[a])):
         plt.plot(range(len(comparing_datas[a][i])), comparing_datas[a][i])
