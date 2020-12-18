@@ -34,8 +34,6 @@ from PIL import Image
 num_classes = 10
 num_epochs = 15
 batch_size = 150
-I = 3
-I = float(I)
 
 # good set of params: learning_rates4 adam/doublepid [0.005,0.0006], i=1,d=1
 
@@ -72,7 +70,7 @@ if model_sign == 2:
     for i in range(len(test_images)):
         resized_images.append(np.array(Image.fromarray(test_images[i]).resize((224, 224), Image.BICUBIC)))
     test_images = np.array(resized_images).transpose((0, 3, 1, 2))
-print('dataset extract completed,there are' + str(len(images)) + 'images')
+print('dataset extract completed,there are ' + str(len(images)) + ' images')
 
 class cifar10_dataset(torch.utils.data.Dataset):
     def __init__(self):
@@ -103,7 +101,7 @@ test_loader = torch.utils.data.DataLoader(dataset=cifar10_test_dataset(), batch_
 BGD_loader = torch.utils.data.DataLoader(dataset=cifar10_dataset(),batch_size=len(images),shuffle=True)
 
 #testing functon
-def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, momentum=0.9, beta=0.999):
+def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, integrate=3, momentum=0.9, beta=0.99):
     training_data = {'train_loss': [], 'val_loss': [], 'train_acc': [], 'val_acc': [], 'ds': [], 'is': []}
     if model_sign == 0:
         net = cifar10_DenseNet(num_classes)
@@ -133,18 +131,20 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, m
         optimizer = special_pid.RMSpropoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001, beta=beta)
     elif optimizer_sign == 2:
         optimizer = special_pid.Adapidoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
-                                                     momentum=momentum, I=I, D=derivative, beta=beta)
+                                                     momentum=momentum, I=integrate, D=derivative, beta=beta)
         oldnet_sign = True
     elif optimizer_sign == 3:
         optimizer = special_pid.double_Adapidoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
-                                                        momentum=momentum, I=I, D=derivative, beta=beta)
+                                                        momentum=momentum, I=integrate, D=derivative, beta=beta)
         oldnet_sign = True
     elif optimizer_sign == 4:
         optimizer = special_pid.PIDoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
-                                                        momentum=momentum, I=I, D=derivative)
+                                                        momentum=momentum, I=integrate, D=derivative)
         oldnet_sign = True
     elif optimizer_sign == 5:
         optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate, betas=(momentum, beta))
+    elif optimizer_sign == 6:
+        optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate, momentum=momentum)
     else:
         raise ValueError('Not correct algorithm symbol')
     if oldnet_sign and derivative != 0:
@@ -233,10 +233,11 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, m
 
 
 'Algorithms that can be choosed'
-algorithm_labels = ['0.Adam', '1.RMSprop', '2.single_Adapid', '3.double_Adapid', '4.PID', '5.Adam_origin']
+algorithm_labels = ['0.Adam', '1.RMSprop', '2.single_Adapid', '3.double_Adapid', '4.PID', '5.Adam_origin', '6.SGD-momentum']
 
 task = int(input('please input a task, 0 for algorithm comparing, 1 for learning rate modify, '
-                 '2 for derivative parameter modify,  3 for momentum parameter (beta0) modify, 4 for adaptive parameter (beta1)modify \n'))
+                 '2 for derivative parameter modify, 3 for integrate parameter modify, '
+                 '4 for momentum parameter (beta0) modify, 5 for adaptive parameter (beta1)modify \n'))
 if task == 0:
     test_algorithms = eval(input('please input testing algorithms, only list consist of int(algorithm sign) supported\n'))
     test_algorithms = [int(i) for i in test_algorithms]
@@ -267,9 +268,16 @@ elif task == 3:
     test_algorithm = int(input('please input a single algorithm symbol \n'))
     learning_rate = float(input('please input a single learning rate \n'))
     derivatives = float(input('please input a single derivative value \n'))
-    momentums = eval(input('please input testing momentums ,only support list \n'))
+    integrates = eval(input('please input testing integrates, only list supported \n'))
+    integrates = [float(i) for i in integrates]
     repeats = int(input('please input how many times to repeat \n'))
 elif task == 4:
+    test_algorithm = int(input('please input a single algorithm symbol \n'))
+    learning_rate = float(input('please input a single learning rate \n'))
+    derivatives = float(input('please input a single derivative value \n'))
+    momentums = eval(input('please input testing momentums ,only support list \n'))
+    repeats = int(input('please input how many times to repeat \n'))
+elif task == 5:
     test_algorithm = int(input('please input a single algorithm symbol \n'))
     learning_rate = float(input('please input a single learning rate \n'))
     derivatives = float(input('please input a single derivative value \n'))
@@ -358,7 +366,7 @@ elif task == 1:
             test_algorithm_labels[a].append(
                 algorithm_labels[test_algorithm] + ' learning_rate=' + str(learning_rates[i]))
 elif task == 2:
-    for i in range(len(derivatives)):
+    for i in range(len(integrates)):
         for j in range(repeats):
             output = training(model_sign=model_sign, optimizer_sign=test_algorithm,
                               learning_rate=learning_rate,
@@ -390,6 +398,38 @@ elif task == 2:
             comparing_datas[a].append(np.array(comparing_data[a]) / repeats)
             test_algorithm_labels[a].append(algorithm_labels[test_algorithm] + ' derivative=' + str(derivatives[i]))
 elif task == 3:
+    for i in range(len(integrates)):
+        for j in range(repeats):
+            output = training(model_sign=model_sign, optimizer_sign=test_algorithm,
+                              learning_rate=learning_rate,
+                              derivative=derivatives, integrate=integrates[i])
+            for a in range(len(show_symbol)):
+                if j == 0:
+                    if show_symbol[a] == 0:
+                        comparing_data[a] = np.array(output['train_acc'])
+                    elif show_symbol[a] == 1:
+                        comparing_data[a] = np.array(output['train_loss'])
+                    elif show_symbol[a] == 2:
+                        comparing_data[a] = 100 - np.array(output['train_acc'])
+                    elif show_symbol[a] == 3:
+                        comparing_data[a] = np.array(output['ds'])
+                    else:
+                        comparing_data[a] = np.array(output['is'])
+                else:
+                    if show_symbol[a] == 0:
+                        comparing_data[a] += np.array(output['train_acc'])
+                    elif show_symbol[a] == 1:
+                        comparing_data[a] += np.array(output['train_loss'])
+                    elif show_symbol[a] == 2:
+                        comparing_data[a] += 100 - np.array(output['train_acc'])
+                    elif show_symbol[a] == 3:
+                        comparing_data[a] += np.array(output['ds'])
+                    else:
+                        comparing_data[a] += np.array(output['is'])
+        for a in range(len(show_symbol)):
+            comparing_datas[a].append(np.array(comparing_data[a]) / repeats)
+            test_algorithm_labels[a].append(algorithm_labels[test_algorithm] + ' integrate=' + str(integrates[i]))
+elif task == 4:
     for i in range(len(momentums)):
         for j in range(repeats):
             output = training(model_sign=model_sign, optimizer_sign=test_algorithm,
@@ -421,7 +461,7 @@ elif task == 3:
         for a in range(len(show_symbol)):
             comparing_datas[a].append(np.array(comparing_data[a]) / repeats)
             test_algorithm_labels[a].append(algorithm_labels[test_algorithm] + ' momentum=' + str(momentums[i]))
-elif task == 4:
+elif task == 5:
     for i in range(len(betas)):
         for j in range(repeats):
             output = training(model_sign=model_sign, optimizer_sign=test_algorithm,

@@ -143,6 +143,8 @@ class Adapidoptimizer(Optimizer):
             momentum = group['momentum']
             I = group['I']
             D = group['D']
+            current_P = 1 / (1 + I)
+            current_I = I / (1 + I)
             beta = group['beta']
             epsilon = group['epsilon']
             for i in range(len(group['params'])):
@@ -178,16 +180,9 @@ class Adapidoptimizer(Optimizer):
                     else:
                         D_buf = param_state['D_buffer']
                         D_buf.mul_(momentum).add_(1 - momentum, d_p.clone() - self.old_grads[i])
-                    if 'dv_buffer' not in param_state:
-                        param_state['dv_buffer'] = ((d_p.clone() - self.old_grads[i]) ** 2) * (1 - beta)
-                        dv_buf = param_state['dv_buffer'] / (1 - beta ** param_state['time_buffer'])
-                    else:
-                        param_state['dv_buffer'] = param_state['dv_buffer'] * beta + (
-                                    (d_p.clone() - self.old_grads[i]) ** 2) * (1 - beta)
-                        dv_buf = param_state['dv_buffer'] / (1 - beta ** param_state['time_buffer'])
-                    p_grad = (d_p.add_(I, I_buf).add(D, D_buf)) / (v_buf ** 0.5 + epsilon)
+                    p_grad = ((d_p * current_P).add_(current_I, I_buf).add(D, D_buf)) / (v_buf ** 0.5 + epsilon)
                 else:
-                    p_grad = (d_p.clone().add_(I, I_buf)) / (v_buf ** 0.5 + epsilon)
+                    p_grad = ((d_p * current_P).add_(current_I, I_buf)) / (v_buf ** 0.5 + epsilon)
                 p.data.add_(-group['lr'], p_grad)
 
         self.get_grad_symbol = False
@@ -233,6 +228,8 @@ class double_Adapidoptimizer(Optimizer):
             momentum = group['momentum']
             I = group['I']
             D = group['D']
+            current_P = 1 / (1 + I)
+            current_I = I / (1 + I)
             beta = group['beta']
             epsilon = group['epsilon']
             ds = [[],[]]
@@ -278,9 +275,9 @@ class double_Adapidoptimizer(Optimizer):
                         param_state['dv_buffer'] = param_state['dv_buffer'] * beta + (
                                     (d_p.clone() - self.old_grads[i]) ** 2) * (1 - beta)
                         dv_buf = param_state['dv_buffer'] / (1 - beta ** param_state['time_buffer'])
-                    p_grad = ((d_p.add_(I, I_buf)) / (v_buf ** 0.5 + epsilon)).add(D, D_buf / (dv_buf ** 0.5 + epsilon))
+                    p_grad = (((d_p * current_P).add_(current_I, I_buf)) / (v_buf ** 0.5 + epsilon)).add(D, D_buf / (dv_buf ** 0.5 + epsilon))
                 else:
-                    p_grad = (d_p.clone().add_(I, I_buf)) / (v_buf ** 0.5 + epsilon)
+                    p_grad = ((d_p * current_P).add_(current_I, I_buf))/ (v_buf ** 0.5 + epsilon)
                 p.data.add_(-group['lr'], p_grad)
                 ds[0].append(torch.mean(torch.abs(I_buf)).detach().cpu().numpy())
                 if D != 0:
@@ -328,6 +325,8 @@ class PIDoptimizer(Optimizer):
             momentum = group['momentum']
             I = group['I']
             D = group['D']
+            current_P = 1 / (1 + I)
+            current_I = I / (1 + I)
             for i in range(len(group['params'])):
                 p = group['params'][i]
                 if p.grad is None:
@@ -355,9 +354,9 @@ class PIDoptimizer(Optimizer):
                     else:
                         D_buf = param_state['D_buffer']
                         D_buf.mul_(momentum).add_(1 - momentum, d_p.clone() - self.old_grads[i])
-                    p_grad = (d_p.add_(I, I_buf).add(D, D_buf))
+                    p_grad = ((d_p * current_P).add_(current_I, I_buf).add(D, D_buf))
                 else:
-                    p_grad = I_buf * I
+                    p_grad = (d_p * current_P).add_(current_I, I_buf)
                 p.data.add_(-group['lr'], p_grad)
 
         self.get_grad_symbol = False
