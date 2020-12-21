@@ -15,18 +15,12 @@ else:
 
 import torch
 import torch.nn as nn
-import torchvision.datasets as dsets
-import torchvision.transforms as transforms
-from torchsummary import summary
 from torch.autograd import Variable
-from torch.optim.sgd import SGD
 import pickle
-import pid
-import os
+from optimizers import pid
 import numpy as np
-from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
+from utils import AverageMeter, accuracy
 from DNN_models import cifar10_CNN, cifar10_DenseNet, cifar10_ResNet18
-import torch.nn.functional as F
 import matplotlib.pyplot as plt
 import random
 random.seed(2)
@@ -133,11 +127,11 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, m
         optimizer = pid.I_decade_Adaoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum[0])
     elif optimizer_sign == 7:
         optimizer = pid.AdapidOptimizer_test(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum, I=I,
-                                        D=derivative)
+                                             D=derivative)
     else:
         raise ValueError('Not correct algorithm symbol')
     if oldnet_sign == True:
-        torch.save(net, 'net.pkl')
+        torch.save(net, '../net.pkl')
         old_net = torch.load('net.pkl')
 
     # Train the Model

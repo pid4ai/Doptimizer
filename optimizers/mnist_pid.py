@@ -2,12 +2,9 @@ import torch
 import torch.nn as nn
 import torchvision.datasets as dsets
 import torchvision.transforms as transforms
-from torchsummary import summary
 from torch.autograd import Variable
-from pid import PIDOptimizer
-import os
-import numpy as np
-from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
+from optimizers.pid import PIDOptimizer
+from utils import Logger, AverageMeter, accuracy
 import torch.nn.functional as F
 # Hyper Parameters 
 input_size = 784

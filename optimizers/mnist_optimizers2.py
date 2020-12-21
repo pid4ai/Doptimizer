@@ -2,13 +2,11 @@ import torch
 import torch.nn as nn
 import torchvision.datasets as dsets
 import torchvision.transforms as transforms
-from torchsummary import summary
 from torch.autograd import Variable
 from torch.optim.sgd import SGD
-from pid import PIDOptimizer
-import os
+from optimizers.pid import PIDOptimizer
 import numpy as np
-from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
+from utils import AverageMeter, accuracy
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
 

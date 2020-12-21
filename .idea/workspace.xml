@@ -37,7 +37,12 @@
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.CIFAR10_special_pid_comparing_parallel">
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\files\programs\Gitkraken\Doptimizer\optimizers" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.CIFAR10_special_pid_comparing">
     <configuration name="CIFAR10_special_pid_comparing (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Doptimizer" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -111,8 +116,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.CIFAR10_special_pid_comparing_parallel" />
         <item itemvalue="Python.CIFAR10_special_pid_comparing" />
+        <item itemvalue="Python.CIFAR10_special_pid_comparing_parallel" />
         <item itemvalue="Python.CIFAR10_special_pid_comparing (1)" />
       </list>
     </recent_temporary>
@@ -138,7 +143,8 @@
       <workItem from="1608116611064" duration="2691000" />
       <workItem from="1608163574525" duration="23048000" />
       <workItem from="1608201009759" duration="3028000" />
-      <workItem from="1608250045609" duration="9491000" />
+      <workItem from="1608250045609" duration="12085000" />
+      <workItem from="1608509055635" duration="410000" />
     </task>
     <servers />
   </component>
@@ -168,10 +174,10 @@
     </state>
     <state x="2254" y="131" key="#SSH_Configurations/0.0.1920.1040/1920.0.1440.860@1920.0.1440.860" timestamp="1608000405743" />
     <state x="2310" y="188" key="#SSH_Configurations/0.0.1920.1040/1920.34.1680.1010@1920.34.1680.1010" timestamp="1608116856879" />
-    <state x="2214" y="193" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1608171254923">
+    <state x="2214" y="193" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1608270798191">
       <screen x="1920" y="34" width="1680" height="1010" />
     </state>
-    <state x="2214" y="193" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.34.1680.1010@1920.34.1680.1010" timestamp="1608171254923" />
+    <state x="2214" y="193" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.34.1680.1010@1920.34.1680.1010" timestamp="1608270798191" />
     <state x="2515" y="240" key="#xdebugger.evaluate" timestamp="1608170526950">
       <screen x="1920" y="34" width="1680" height="1010" />
     </state>
@@ -180,46 +186,46 @@
       <screen x="1920" y="0" width="1440" height="860" />
     </state>
     <state x="2417" y="170" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1440.860@1920.0.1440.860" timestamp="1608000767996" />
-    <state width="1245" height="362" key="GridCell.Tab.0.bottom" timestamp="1608268812414">
+    <state width="1244" height="375" key="GridCell.Tab.0.bottom" timestamp="1608291153558">
       <screen x="1920" y="34" width="1680" height="1010" />
     </state>
     <state width="1397" height="2" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1440.860@1920.0.1440.860" timestamp="1608001888689" />
-    <state width="1245" height="362" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.34.1680.1010@1920.34.1680.1010" timestamp="1608268812414" />
-    <state width="1245" height="362" key="GridCell.Tab.0.center" timestamp="1608268812413">
+    <state width="1244" height="375" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.34.1680.1010@1920.34.1680.1010" timestamp="1608291153558" />
+    <state width="1244" height="375" key="GridCell.Tab.0.center" timestamp="1608291153558">
       <screen x="1920" y="34" width="1680" height="1010" />
     </state>
     <state width="1397" height="2" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1440.860@1920.0.1440.860" timestamp="1608001888689" />
-    <state width="1245" height="362" key="GridCell.Tab.0.center/0.0.1920.1040/1920.34.1680.1010@1920.34.1680.1010" timestamp="1608268812413" />
-    <state width="1245" height="362" key="GridCell.Tab.0.left" timestamp="1608268812413">
+    <state width="1244" height="375" key="GridCell.Tab.0.center/0.0.1920.1040/1920.34.1680.1010@1920.34.1680.1010" timestamp="1608291153558" />
+    <state width="1244" height="375" key="GridCell.Tab.0.left" timestamp="1608291153557">
       <screen x="1920" y="34" width="1680" height="1010" />
     </state>
     <state width="1397" height="2" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1440.860@1920.0.1440.860" timestamp="1608001888689" />
-    <state width="1245" height="362" key="GridCell.Tab.0.left/0.0.1920.1040/1920.34.1680.1010@1920.34.1680.1010" timestamp="1608268812413" />
-    <state width="1245" height="362" key="GridCell.Tab.0.right" timestamp="1608268812413">
+    <state width="1244" height="375" key="GridCell.Tab.0.left/0.0.1920.1040/1920.34.1680.1010@1920.34.1680.1010" timestamp="1608291153557" />
+    <state width="1244" height="375" key="GridCell.Tab.0.right" timestamp="1608291153558">
       <screen x="1920" y="34" width="1680" height="1010" />
     </state>
     <state width="1397" height="2" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1440.860@1920.0.1440.860" timestamp="1608001888689" />
-    <state width="1245" height="362" key="GridCell.Tab.0.right/0.0.1920.1040/1920.34.1680.1010@1920.34.1680.1010" timestamp="1608268812413" />
-    <state width="1245" height="362" key="GridCell.Tab.1.bottom" timestamp="1608265501460">
+    <state width="1244" height="375" key="GridCell.Tab.0.right/0.0.1920.1040/1920.34.1680.1010@1920.34.1680.1010" timestamp="1608291153558" />
+    <state width="1244" height="375" key="GridCell.Tab.1.bottom" timestamp="1608291153558">
       <screen x="1920" y="34" width="1680" height="1010" />
     </state>
     <state width="1397" height="2" key="GridCell.Tab.1.bottom/0.0.1920.1040/1920.0.1440.860@1920.0.1440.860" timestamp="1608001888689" />
-    <state width="1245" height="362" key="GridCell.Tab.1.bottom/0.0.1920.1040/1920.34.1680.1010@1920.34.1680.1010" timestamp="1608265501460" />
-    <state width="1245" height="362" key="GridCell.Tab.1.center" timestamp="1608265501459">
+    <state width="1244" height="375" key="GridCell.Tab.1.bottom/0.0.1920.1040/1920.34.1680.1010@1920.34.1680.1010" timestamp="1608291153558" />
+    <state width="1244" height="375" key="GridCell.Tab.1.center" timestamp="1608291153558">
       <screen x="1920" y="34" width="1680" height="1010" />
     </state>
     <state width="1397" height="2" key="GridCell.Tab.1.center/0.0.1920.1040/1920.0.1440.860@1920.0.1440.860" timestamp="1608001888689" />
-    <state width="1245" height="362" key="GridCell.Tab.1.center/0.0.1920.1040/1920.34.1680.1010@1920.34.1680.1010" timestamp="1608265501459" />
-    <state width="1245" height="362" key="GridCell.Tab.1.left" timestamp="1608265501459">
+    <state width="1244" height="375" key="GridCell.Tab.1.center/0.0.1920.1040/1920.34.1680.1010@1920.34.1680.1010" timestamp="1608291153558" />
+    <state width="1244" height="375" key="GridCell.Tab.1.left" timestamp="1608291153558">
       <screen x="1920" y="34" width="1680" height="1010" />
     </state>
     <state width="1397" height="2" key="GridCell.Tab.1.left/0.0.1920.1040/1920.0.1440.860@1920.0.1440.860" timestamp="1608001888689" />
-    <state width="1245" height="362" key="GridCell.Tab.1.left/0.0.1920.1040/1920.34.1680.1010@1920.34.1680.1010" timestamp="1608265501459" />
-    <state width="1245" height="362" key="GridCell.Tab.1.right" timestamp="1608265501460">
+    <state width="1244" height="375" key="GridCell.Tab.1.left/0.0.1920.1040/1920.34.1680.1010@1920.34.1680.1010" timestamp="1608291153558" />
+    <state width="1244" height="375" key="GridCell.Tab.1.right" timestamp="1608291153558">
       <screen x="1920" y="34" width="1680" height="1010" />
     </state>
     <state width="1397" height="2" key="GridCell.Tab.1.right/0.0.1920.1040/1920.0.1440.860@1920.0.1440.860" timestamp="1608001888689" />
-    <state width="1245" height="362" key="GridCell.Tab.1.right/0.0.1920.1040/1920.34.1680.1010@1920.34.1680.1010" timestamp="1608265501459" />
+    <state width="1244" height="375" key="GridCell.Tab.1.right/0.0.1920.1040/1920.34.1680.1010@1920.34.1680.1010" timestamp="1608291153558" />
     <state x="2178" y="121" key="SettingsEditor" timestamp="1608164807510">
       <screen x="1920" y="34" width="1680" height="1010" />
     </state>
@@ -252,12 +258,17 @@
           <line>316</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/CIFAR10_special_pid_comparing.py</url>
+          <line>502</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Doptimizer$CIFAR10_special_pid_comparing__1_.coverage" NAME="CIFAR10_special_pid_comparing (1) Coverage Results" MODIFIED="1608117268020" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/" />
-    <SUITE FILE_PATH="coverage/Doptimizer$CIFAR10_special_pid_comparing.coverage" NAME="CIFAR10_special_pid_comparing Coverage Results" MODIFIED="1608205086640" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Doptimizer$CIFAR10_special_pid_comparing.coverage" NAME="CIFAR10_special_pid_comparing Coverage Results" MODIFIED="1608270800685" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Doptimizer$CIFAR10_special_pid_comparing_parallel.coverage" NAME="CIFAR10_special_pid_comparing_parallel Coverage Results" MODIFIED="1608259716452" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

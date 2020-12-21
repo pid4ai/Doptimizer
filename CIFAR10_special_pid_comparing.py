@@ -25,33 +25,6 @@ import special_pid
 import os
 import numpy as np
 from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
-import os
-
-
-gpu_specify = input ('Please choose a device, 0~3 for single GPU, 4 for all GPUs, none for CPU: \n')
-if gpu_specify == '':
-    gpu_sign = 0
-elif gpu_specify == '4':
-    gpu_sign = 1
-elif gpu_specify == '0' or gpu_specify == '1' or gpu_specify == '2' or gpu_specify == '3':
-    os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-    os.environ["CUDA_VISIBLE_DEVICES"] = gpu_specify
-    gpu_sign = 2
-else:
-    raise ValueError('incorrect GPU symbol')
-
-import torch
-import torch.nn as nn
-import torchvision.datasets as dsets
-import torchvision.transforms as transforms
-from torchsummary import summary
-from torch.autograd import Variable
-from torch.optim.sgd import SGD
-import pickle
-import special_pid
-import os
-import numpy as np
-from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
 from DNN_models import cifar10_CNN, cifar10_DenseNet, cifar10_ResNet18
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
@@ -59,8 +32,8 @@ from PIL import Image
 
 # Hyper Parameters
 num_classes = 10
-num_epochs = 15
-batch_size = 150
+num_epochs = 100
+batch_size = 1000
 
 # good set of params: learning_rates4 adam/doublepid [0.005,0.0006], i=1,d=1
 
