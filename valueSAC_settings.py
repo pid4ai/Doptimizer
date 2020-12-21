@@ -160,10 +160,10 @@ class SAC(nn.Module):
         self.Qvalue_net1 = Qvaluenet(state_dim, action_dim).cuda()
         self.Qvalue_net2 = Qvaluenet(state_dim, action_dim).cuda()
 
-        self.policy_optimizer = torch.optim.Adam(self.policy_net.parameters(), lr=self.action_lr)
-        self.value_optimizer = torch.optim.Adam(self.value_net.parameters(), lr=self.value_lr)
-        self.Qvalue_optimizer1 = torch.optim.Adam(self.Qvalue_net1.parameters(), lr=self.value_lr)
-        self.Qvalue_optimizer2 = torch.optim.Adam(self.Qvalue_net2.parameters(), lr=self.value_lr)
+        self.policy_optimizer = torch.optim.Adam(self.policy_net.parameters(), lr=self.action_lr, betas=(0.1,0.999))
+        self.value_optimizer = torch.optim.Adam(self.value_net.parameters(), lr=self.value_lr, betas=(0.1,0.999))
+        self.Qvalue_optimizer1 = torch.optim.Adam(self.Qvalue_net1.parameters(), lr=self.value_lr, betas=(0.1,0.999))
+        self.Qvalue_optimizer2 = torch.optim.Adam(self.Qvalue_net2.parameters(), lr=self.value_lr, betas=(0.1,0.999))
 
     def SAC_training(self, state, action, reward, next_state, done):
         self.replay_memory_store.append([state, action, reward, next_state, done])

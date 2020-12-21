@@ -32,8 +32,8 @@ from PIL import Image
 
 # Hyper Parameters
 num_classes = 10
-num_epochs = 15
-batch_size = 150
+num_epochs = 100
+batch_size = 1000
 
 # good set of params: learning_rates4 adam/doublepid [0.005,0.0006], i=1,d=1
 
@@ -499,8 +499,8 @@ for a in range(len(show_symbol)):
         plt.plot(range(len(comparing_datas[a][i])), comparing_datas[a][i])
     plt.legend(test_algorithm_labels[a])
 
-    plt.title(models[model_sign] + ' CIFAR10, ' + shows[show_symbol[a]])
-    plt.savefig('/home/chen/programs/Doptimizer/data/matplotlib/' + str(save_sign))
+    plt.title(models[model_sign] + ' CIFAR10, ' + shows[show_symbol[a]] + ' ,derivatives:' + str(derivatives))
+    plt.savefig('D:/GitKraken/Doptimizer/data/matplotlib/' + str(save_sign))
     save_sign += 1
     plt.show()
     plt.cla()

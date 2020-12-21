@@ -39,10 +39,17 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+<<<<<<< Updated upstream
       <recent name="E:\files\programs\Gitkraken\Doptimizer\optimizers" />
     </key>
   </component>
   <component name="RunManager" selected="Python.CIFAR10_special_pid_comparing">
+=======
+      <recent name="D:\GitKraken\Doptimizer\data\matplotlib\1" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.CIFAR10_special_pid_comparing_parallel">
+>>>>>>> Stashed changes
     <configuration name="CIFAR10_special_pid_comparing (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Doptimizer" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -141,10 +148,22 @@
       <workItem from="1607998593718" duration="1871000" />
       <workItem from="1608000495431" duration="1452000" />
       <workItem from="1608116611064" duration="2691000" />
+<<<<<<< Updated upstream
       <workItem from="1608163574525" duration="23048000" />
+<<<<<<< Updated upstream
       <workItem from="1608201009759" duration="3028000" />
+<<<<<<< Updated upstream
       <workItem from="1608250045609" duration="12085000" />
       <workItem from="1608509055635" duration="410000" />
+=======
+      <workItem from="1608250045609" duration="9491000" />
+=======
+=======
+      <workItem from="1608163574525" duration="8246000" />
+      <workItem from="1608174197552" duration="5096000" />
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     </task>
     <servers />
   </component>
@@ -163,6 +182,7 @@
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
+<<<<<<< Updated upstream
   <component name="WindowStateProjectService">
     <state x="2106" y="151" key="#Deployment" timestamp="1608170714808">
       <screen x="1920" y="34" width="1680" height="1010" />
@@ -268,7 +288,22 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Doptimizer$CIFAR10_special_pid_comparing__1_.coverage" NAME="CIFAR10_special_pid_comparing (1) Coverage Results" MODIFIED="1608117268020" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/" />
+<<<<<<< Updated upstream
     <SUITE FILE_PATH="coverage/Doptimizer$CIFAR10_special_pid_comparing.coverage" NAME="CIFAR10_special_pid_comparing Coverage Results" MODIFIED="1608270800685" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+=======
+<<<<<<< Updated upstream
+    <SUITE FILE_PATH="coverage/Doptimizer$CIFAR10_special_pid_comparing.coverage" NAME="CIFAR10_special_pid_comparing Coverage Results" MODIFIED="1608205086640" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+>>>>>>> Stashed changes
     <SUITE FILE_PATH="coverage/Doptimizer$CIFAR10_special_pid_comparing_parallel.coverage" NAME="CIFAR10_special_pid_comparing_parallel Coverage Results" MODIFIED="1608259716452" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+=======
+    <SUITE FILE_PATH="coverage/Doptimizer$CIFAR10_special_pid_comparing.coverage" NAME="CIFAR10_special_pid_comparing Coverage Results" MODIFIED="1608188739571" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Doptimizer$CIFAR10_special_pid_comparing_parallel.coverage" NAME="CIFAR10_special_pid_comparing_parallel Coverage Results" MODIFIED="1608193859793" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+=======
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Doptimizer$CIFAR10_special_pid_comparing__1_.coverage" NAME="CIFAR10_special_pid_comparing (1) Coverage Results" MODIFIED="1608117268020" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/" />
+    <SUITE FILE_PATH="coverage/Doptimizer$CIFAR10_special_pid_comparing.coverage" NAME="CIFAR10_special_pid_comparing Coverage Results" MODIFIED="1608169155304" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Doptimizer$CIFAR10_special_pid_comparing_parallel.coverage" NAME="CIFAR10_special_pid_comparing_parallel Coverage Results" MODIFIED="1608187747284" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
   </component>
 </project>
