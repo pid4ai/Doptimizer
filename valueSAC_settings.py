@@ -7,13 +7,14 @@ import torch
 import torch.nn as nn
 from torch.distributions import Normal
 import torch.nn.functional as F
+import special_pid as opt
 
 
 class Settings():
 
     def __init__(self):
-        self.screen_width = 1360
-        self.screen_height = 400
+        self.screen_width = 1920
+        self.screen_height = 300
         self.bg_color = (0,192,255)
         self.title = 'double order inverted pendulum'
 
@@ -23,36 +24,31 @@ class Settings():
         self.STEP = 1000
         self.max_action = 2
 
-        self.matG = np.array([[1, 0, 0, 0.01, 0, 0], [0, 1.0032, -0.0016, 0, 0.01, 0], [0, -0.0048, 1.0043, 0, 0, 0.01],
-                              [0, 0, 0, 1, 0, 0], [0, 0.6441, -0.3222, 0, 1.0032, -0.0016],
-                              [0, -0.9667, 0.8589, 0, -0.0048, 1.0043]])
-        self.matH = np.array([0.0001, -0.0002, 0.0001, 0.01, -0.0322, 0.0108])
+        self.matG = np.array([[1, 0, 0.01, 0], [0, 1.0019, 0, 0.01], [0, 0, 1, 0], [0, 0.3752, 0, 1.0019]])
+        self.matH = np.array([0.0001, -0.0002, 0.01, -0.0375])
+        self.noise = np.array([0.001, 0.01, 0.01, 0.1])
 
 class Car():
-    def __init__(self,screen):
+    def __init__(self, screen):
         self.screen = screen
         self.image = pygame.image.load('car.png')
         self.rect = self.image.get_rect()
         self.screen_rect = self.screen.get_rect()
         self.rect.centerx = self.screen_rect.centerx
-        self.rect.bottom = 370
-        self.pendulum_length = 120
+        self.rect.bottom = 270
+        self.pendulum_length = 200
 
-    def xshift(self,xposition):
-        self.rect.centerx = self.screen_rect.centerx+int(200*xposition)
+    def xshift(self, xposition):
+        self.rect.centerx = self.screen_rect.centerx + int(100 * xposition)
         self.screen.blit(self.image, self.rect)
 
-    def draw_pendulum(self,screen,xposition,arc1,arc2):
-        bottomx1 = self.screen_rect.centerx+int(200*xposition)
-        bottomy1 = 350
-        bottomx2 = int(bottomx1+math.sin(arc1)*self.pendulum_length)
-        bottomy2 = int(bottomy1-math.cos(arc1)*self.pendulum_length)
-        topx = bottomx2+int(math.sin(arc2)*self.pendulum_length)
-        topy = bottomy2-int(math.cos(arc2)*self.pendulum_length)
-        pygame.draw.line(screen, (255, 128, 0), (bottomx1, bottomy1), (bottomx2, bottomy2), 10)
-        pygame.draw.line(screen, (255, 128, 0), (bottomx2, bottomy2), (topx, topy), 10)
-        pygame.draw.circle(screen, (192, 0, 192), (bottomx1 + 1, bottomy1), 6, 0)
-        pygame.draw.circle(screen,(192,0,192),(bottomx2+1,bottomy2),6,0)
+    def draw_pendulum(self, screen, xposition, arc):
+        bottomx = self.screen_rect.centerx + int(100 * xposition)
+        bottomy = 250
+        topx = int(bottomx + math.sin(arc) * self.pendulum_length)
+        topy = int(bottomy - math.cos(arc) * self.pendulum_length)
+        pygame.draw.line(screen, (255, 128, 0), (bottomx, bottomy), (topx, topy), 10)
+        pygame.draw.circle(screen, (192, 0, 192), (bottomx + 1, bottomy), 6, 0)
 
 
 class policy_net(nn.Module):
@@ -142,16 +138,15 @@ class SAC(nn.Module):
         self.replace = 500
         self.replace_sign = replace_sign
         self.replace_rate = 0.01
-        self.action_lr = 0.0001
-        self.value_lr = 0.001
-        self.action_renew_steps = 5
         self.gamma = 0.97
-        self.memory_size = 30000
+        self.memory_size = 10000
         self.batch_size = 32
-        self.alpha = 5
-
-
         self.alpha = 0.1
+
+        self.test_sign = 0
+        self.end_sign = 0
+        self.state_dim = state_dim
+        self.action_dim = action_dim
 
         self.policy_net = policy_net(state_dim, action_dim).cuda()
         self.value_net = value_net(state_dim).cuda()
@@ -160,10 +155,8 @@ class SAC(nn.Module):
         self.Qvalue_net1 = Qvaluenet(state_dim, action_dim).cuda()
         self.Qvalue_net2 = Qvaluenet(state_dim, action_dim).cuda()
 
-        self.policy_optimizer = torch.optim.Adam(self.policy_net.parameters(), lr=self.action_lr, betas=(0.1,0.999))
-        self.value_optimizer = torch.optim.Adam(self.value_net.parameters(), lr=self.value_lr, betas=(0.1,0.999))
-        self.Qvalue_optimizer1 = torch.optim.Adam(self.Qvalue_net1.parameters(), lr=self.value_lr, betas=(0.1,0.999))
-        self.Qvalue_optimizer2 = torch.optim.Adam(self.Qvalue_net2.parameters(), lr=self.value_lr, betas=(0.1,0.999))
+        self.nets = [self.policy_net, self.value_net, self.Qvalue_net1, self.Qvalue_net2]
+
 
     def SAC_training(self, state, action, reward, next_state, done):
         self.replay_memory_store.append([state, action, reward, next_state, done])
@@ -209,33 +202,203 @@ class SAC(nn.Module):
             Qvalue1_loss = F.mse_loss(Qvalue1_batch, (reward_batch + self.gamma * next_value_batch).detach())
             Qvalue2_loss = F.mse_loss(Qvalue2_batch, (reward_batch + self.gamma * next_value_batch).detach())
 
+            if self.oldnet_sign == 1:
+                onew_action_batch, onew_entropy_batch = self.policy_old.evaluate(state_batch)
+                onew_Qvalue1_batch = self.Qvalue_old1(state_batch, onew_action_batch)
+                onew_Qvalue2_batch = self.Qvalue_old2(state_batch, onew_action_batch)
+                onew_Qvalue_batch = torch.min(onew_Qvalue1_batch,onew_Qvalue2_batch)
+                ovalue_batch = self.value_old(state_batch)
+                oQvalue1_batch = self.Qvalue_old1(state_batch, action_batch)
+                oQvalue2_batch = self.Qvalue_old2(state_batch, action_batch)
+                ovalue_loss = F.mse_loss(ovalue_batch, (onew_Qvalue_batch - self.alpha * onew_entropy_batch).detach())
+                opolicy_loss = torch.mean(self.alpha * onew_entropy_batch - onew_Qvalue_batch)
+                oQvalue1_loss = F.mse_loss(oQvalue1_batch, (reward_batch + self.gamma * next_value_batch).detach())
+                oQvalue2_loss = F.mse_loss(oQvalue2_batch, (reward_batch + self.gamma * next_value_batch).detach())
+                ovalue_loss.backward()
+                opolicy_loss.backward()
+                oQvalue1_loss.backward()
+                oQvalue2_loss.backward()
+                parameters = list(self.value_old.parameters())
+                old_grads = [parameter.grad.clone() for parameter in parameters]
+                self.value_optimizer.get_oldgrad(old_grads)
+                parameters = list(self.policy_old.parameters())
+                old_grads = [parameter.grad.clone() for parameter in parameters]
+                self.policy_optimizer.get_oldgrad(old_grads)
+                parameters = list(self.Qvalue_old1.parameters())
+                old_grads = [parameter.grad.clone() for parameter in parameters]
+                self.Qvalue_optimizer1.get_oldgrad(old_grads)
+                parameters = list(self.Qvalue_old2.parameters())
+                old_grads = [parameter.grad.clone() for parameter in parameters]
+                self.Qvalue_optimizer2.get_oldgrad(old_grads)
+                torch.save(self.policy_net, 'data/nets/policy.pkl')
+                torch.save(self.value_net, 'data/nets/value.pkl')
+                torch.save(self.Qvalue_net1, 'data/nets/Qvalue1.pkl')
+                torch.save(self.Qvalue_net2, 'data/nets/Qvalue2.pkl')
+                self.policy_old = torch.load('data/nets/policy.pkl')
+                self.value_old = torch.load('data/nets/value.pkl')
+                self.Qvalue_old1 = torch.load('data/nets/Qvalue1.pkl')
+                self.Qvalue_old2 = torch.load('data/nets/Qvalue2.pkl')
+
             self.policy_optimizer.zero_grad()
             policy_loss.backward()
-            parameters = list(self.policy_net.parameters())
-            for parameter in parameters:
-                torch.clamp(parameter.grad, -0.05, 0.05)
             self.policy_optimizer.step()
 
             self.value_optimizer.zero_grad()
             value_loss.backward()
-            parameters = list(self.value_net.parameters())
-            for parameter in parameters:
-                torch.clamp(parameter.grad, -0.1, 0.1)
             self.value_optimizer.step()
 
             self.Qvalue_optimizer1.zero_grad()
             Qvalue1_loss.backward()
-            parameters = list(self.Qvalue_net1.parameters())
-            for parameter in parameters:
-                torch.clamp(parameter.grad, -0.1, 0.1)
             self.Qvalue_optimizer1.step()
 
             self.Qvalue_optimizer2.zero_grad()
             Qvalue2_loss.backward()
-            parameters=list(self.Qvalue_net2.parameters())
-            for parameter in parameters:
-                torch.clamp(parameter.grad, -0.1, 0.1)
             self.Qvalue_optimizer2.step()
+
+    def get_task_message(self):
+        self. algorithms = ['0.Adam', '1.RMSprop', '2.single_Adapid', '3.double_Adapid', '4.PID', '5.Adam_origin', '6.SGD-momentum']
+        self.derivative_sign = [0, 0, 1, 1, 1, 0, 0] #是否带微分项标志，与上方的算法对应
+        self.Adaptive_sign = [1, 1, 1, 1, 0, 1, 0]#是否带自适应项标志
+        task = int(input('please input a task. 0 for algorithm modify, 1 for learning rate modify, 2 for beta modify, 3 for PID modify: \n ' ))
+        if task == 0:
+            algorithms = eval(input('please input the list of test algorithms: \n'))
+            algorithms = [int(i) for i in algorithms]
+            self.test_len = len(algorithms)
+        else:
+            algorithms = int(input('please input a single algorithm: \n'))
+        if task == 1 or task == 0:
+            lrs = eval(input('please input the list of learning rates: \n'))
+            if task == 0:
+                if len(lrs) > len(algorithms):
+                    lrs = lrs[:len(algorithms)]
+                else:
+                    for i in range(len(algorithms) - len(lrs)):
+                        lrs.append(lrs[-1])
+            self.test_len = len(lrs)
+        else:
+            lrs = float(input('please input a single learning rate: \n'))
+        if task == 2 or task == 0:
+            betas = eval(input(('please input the list of testing betas: \n')))
+            if task == 0:
+                if len(betas) > len(algorithms):
+                    betas = betas[:len(algorithms)]
+                else:
+                    for i in range(len(algorithms) - len(betas)):
+                        betas.append(betas[-1])
+            self.test_len = len(betas)
+        else:
+            betas = float(input('please input a single beta value (list of beta1 and beta2 for Adaptive algorithm):\n'))
+        if task == 0:
+            PIparameter = eval(input('please input the list of testing pid parameters:'))
+            if len(PIparameter) > len(algorithms):
+                PIparameter = PIparameter[:len(algorithms)]
+            else:
+                for i in range(len(algorithms) - len(PIparameter)):
+                    betas.append(PIparameter[-1])
+        elif self.derivative_sign[algorithms] == 1:
+            if task == 3:
+                PIparameter = eval(input('please input the list of testing pid parameters:'))
+                self.test_len = len(PIparameter)
+            else:
+                PIparameter = float(input('please input a single pid parameter group value: \n'))
+        else:
+            PIparameter = []
+        self.task = task
+        self.algorithms = algorithms
+        self.lrs = lrs
+        self.betas = betas
+        self.PIparameter = PIparameter
+
+    def set_optimizers(self):
+        optimizers = []
+        self.oldnet_sign = 0
+        for net in self.nets:
+            if self.current_algorithm == 0:
+                optimizer = opt.Adamoptimizer(net.parameters(), lr=self.current_lr, weight_decay=0.0001,
+                                              momentum=self.current_beta[0], beta=self.current_beta[1])
+            elif self.current_algorithm == 1:
+                optimizer = opt.RMSpropoptimizer(net.parameters(), lr=self.current_lr, weight_decay=0.0001, beta=self.current_beta)
+            elif self.current_algorithm == 2:
+                optimizer = opt.Adapidoptimizer(net.parameters(), lr=self.current_lr, weight_decay=0.0001,
+                                                momentum=self.current_beta[0], beta=self.current_beta[1],
+                                                I=self.current_PIparameter[0], D=self.current_PIparameter[1])
+            if self.current_PIparameter[1] != 0:
+                self.oldnet_sign = 1
+            elif self.current_algorithm == 3:
+                optimizer = opt.double_Adapidoptimizer(net.parameters(), lr=self.current_lr, weight_decay=0.0001,
+                                                momentum=self.current_beta[0], beta=self.current_beta[1],
+                                                I=self.current_PIparameter[0], D=self.current_PIparameter[1])
+            if self.current_PIparameter[1] != 0:
+                self.oldnet_sign = 1
+            elif self.current_algorithm == 4:
+                optimizer = opt.PIDoptimizer(net.parameters(), lr=self.current_lr, weight_decay=0.0001,
+                                                momentum=self.current_beta,
+                                                I=self.current_PIparameter[0], D=self.current_PIparameter[1])
+                if self.current_PIparameter[1] != 0:
+                    self.oldnet_sign = 1
+            elif self.current_algorithm == 5:
+                optimizer = torch.optim.Adam(net.parameters(), lr=self.current_lr,
+                                             betas=(self.current_beta[0], self.current_beta[1]))
+            elif self.current_algorithm == 6:
+                optimizer = torch.optim.SGD(net.parameters(), lr=self.current_lr, momentum=self.current_beta)
+            else:
+                raise ValueError('Not correct algorithm symbol')
+            optimizers.append(optimizer)
+        self.policy_optimizer = optimizers[0]
+        self.value_optimizer = optimizers[1]
+        self.Qvalue_optimizer1 = optimizers[2]
+        self.Qvalue_optimizer2 = optimizers[3]
+        if self.oldnet_sign == 1:
+            torch.save(self.policy_net, 'data/nets/policy.pkl')
+            torch.save(self.value_net, 'data/nets/value.pkl')
+            torch.save(self.Qvalue_net1, 'data/nets/Qvalue1.pkl')
+            torch.save(self.Qvalue_net2, 'data/nets/Qvalue2.pkl')
+            self.policy_old = torch.load('data/nets/policy.pkl')
+            self.value_old = torch.load('data/nets/value.pkl')
+            self.Qvalue_old1 = torch.load('data/nets/Qvalue1.pkl')
+            self.Qvalue_old2 = torch.load('data/nets/Qvalue2.pkl')
+
+    def set_current_parameters(self):
+        if self.test_sign >= self.test_len:
+            self.end_sign = 1
+        else:
+            if self.task == 0:
+                self.current_algorithm = self.algorithms[self.test_sign]
+            else:
+                self.current_algorithm = self.algorithms
+            if self.task == 0 or self.task == 1:
+                self.current_lr = self.lrs[self.test_sign]
+            else:
+                self.current_lr = self.lrs
+            if self.task == 0 or self.task == 2:
+                self.current_beta = self.betas[self.test_sign]
+            else:
+                self.current_beta = self.betas
+            if self.Adaptive_sign[self.current_algorithm] == 0 and isinstance(self.current_beta, list) == True:
+                self.current_beta = self.current_beta[0]
+            elif self.Adaptive_sign[self.current_algorithm] == 1 and isinstance(self.current_beta, list) == False:
+                self.current_beta = [self.current_beta, self.current_beta]
+            if self.derivative_sign[self.current_algorithm] == True:
+                if self.task == 0 or self.task == 3:
+                    self.current_PIparameter = self.PIparameter[self.test_sign]
+                else:
+                    self.current_PIparameter = self.PIparameter
+                if isinstance(self.current_PIparameter, list) == False:
+                    self.current_PIparameter = [self.current_PIparameter, 0]
+        self.test_sign += 1
+
+    def task_initialize(self):
+        self.replay_memory_store = deque()
+        self.step_index = 0
+        self.policy_net = policy_net(self.state_dim, self.action_dim).cuda()
+        self.value_net = value_net(self.state_dim).cuda()
+        self.value_target = value_net(self.state_dim).cuda()
+        self.value_target.training = False
+        self.Qvalue_net1 = Qvaluenet(self.state_dim, self.action_dim).cuda()
+        self.Qvalue_net2 = Qvaluenet(self.state_dim, self.action_dim).cuda()
+        self.nets = [self.policy_net, self.value_net, self.Qvalue_net1, self.Qvalue_net2]
+
+
 
 
 

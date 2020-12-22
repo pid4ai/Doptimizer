@@ -148,8 +148,8 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, i
     else:
         raise ValueError('Not correct algorithm symbol')
     if oldnet_sign and derivative != 0:
-        torch.save(net, 'net.pkl')
-        old_net = torch.load('net.pkl')
+        torch.save(net, 'data/nets/net.pkl')
+        old_net = torch.load('data/nets/net.pkl')
 
     # Train the Model
     for epoch in range(num_epochs):
@@ -179,11 +179,11 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, i
                 old_outputs = old_net(images)
                 old_loss = criterion(old_outputs, labels)
                 old_loss.backward()
-                parameters  = list(old_net.parameters())
-                old_grads = [parameter.grad.detach() for parameter in parameters]
+                parameters = list(old_net.parameters())
+                old_grads = [parameter.grad.clone() for parameter in parameters]
                 optimizer.get_oldgrad(old_grads)
-                torch.save(net, 'net.pkl')
-                old_net = torch.load('net.pkl')
+                torch.save(net, 'data/nets/net.pkl')
+                old_net = torch.load('data/nets/net.pkl')
             if optimizer_sign != 3:
                 optimizer.step()
             else:
