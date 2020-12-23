@@ -99,7 +99,7 @@ def main():
             ave_reward = total_reward / TEST
             print('episodes:', i, 'average_reward:',ave_reward)
             a1.append(ave_reward)
-            if ave_reward >= 1000 or i > 2000:
+            if ave_reward >= STEP or i > EPISODE - 5:
                 return(a1)
 
 
@@ -120,6 +120,6 @@ while(1):
         agent.task_initialize()
         agent.set_optimizers()
         rewards.append(main())
-        test_labels.append(agent.algorithms[agent.current_algorithm] + ',' + str(agent.current_lr) + ',' + str(agent.current_beta))
+        test_labels.append(agent.algorithm_labels[agent.current_algorithm] + ',' + str(agent.current_lr) + ',' + str(agent.current_beta))
         if agent.derivative_sign[agent.current_algorithm] == 1:
             test_labels[-1] = test_labels[-1] + ',' + str(agent.current_PIparameter)

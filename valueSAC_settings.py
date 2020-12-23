@@ -18,7 +18,7 @@ class Settings():
         self.bg_color = (0,192,255)
         self.title = 'double order inverted pendulum'
 
-        self.EPISODE = 10000
+        self.EPISODE = 2000
         self.TEST = 2
         self.TEST1 = 10
         self.STEP = 1000
@@ -230,35 +230,49 @@ class SAC(nn.Module):
                 parameters = list(self.Qvalue_old2.parameters())
                 old_grads = [parameter.grad.clone() for parameter in parameters]
                 self.Qvalue_optimizer2.get_oldgrad(old_grads)
-                torch.save(self.policy_net, 'data/nets/policy.pkl')
-                torch.save(self.value_net, 'data/nets/value.pkl')
-                torch.save(self.Qvalue_net1, 'data/nets/Qvalue1.pkl')
-                torch.save(self.Qvalue_net2, 'data/nets/Qvalue2.pkl')
-                self.policy_old = torch.load('data/nets/policy.pkl')
-                self.value_old = torch.load('data/nets/value.pkl')
-                self.Qvalue_old1 = torch.load('data/nets/Qvalue1.pkl')
-                self.Qvalue_old2 = torch.load('data/nets/Qvalue2.pkl')
+                torch.save(self.policy_net, '/home/chen/programs/Doptimizer/data/nets/policy.pkl')
+                torch.save(self.value_net, '/home/chen/programs/Doptimizer/data/nets/value.pkl')
+                torch.save(self.Qvalue_net1, '/home/chen/programs/Doptimizer/data/nets/Qvalue1.pkl')
+                torch.save(self.Qvalue_net2, '/home/chen/programs/Doptimizer/data/nets/Qvalue2.pkl')
+                self.policy_old = torch.load('/home/chen/programs/Doptimizer/data/nets/policy.pkl')
+                self.value_old = torch.load('/home/chen/programs/Doptimizer/data/nets/value.pkl')
+                self.Qvalue_old1 = torch.load('/home/chen/programs/Doptimizer/data/nets/Qvalue1.pkl')
+                self.Qvalue_old2 = torch.load('/home/chen/programs/Doptimizer/data/nets/Qvalue2.pkl')
 
             self.policy_optimizer.zero_grad()
             policy_loss.backward()
+            parameters = list(self.policy_net.parameters())
+            for parameter in parameters:
+                torch.clamp(parameter.grad, -0.05, 0.05)
             self.policy_optimizer.step()
 
             self.value_optimizer.zero_grad()
             value_loss.backward()
+            parameters = list(self.value_net.parameters())
+            for parameter in parameters:
+                torch.clamp(parameter.grad, -0.1, 0.1)
             self.value_optimizer.step()
 
             self.Qvalue_optimizer1.zero_grad()
             Qvalue1_loss.backward()
+            parameters = list(self.Qvalue_net1.parameters())
+            for parameter in parameters:
+                torch.clamp(parameter.grad, -0.1, 0.1)
             self.Qvalue_optimizer1.step()
 
             self.Qvalue_optimizer2.zero_grad()
             Qvalue2_loss.backward()
+            parameters = list(self.Qvalue_net2.parameters())
+            for parameter in parameters:
+                torch.clamp(parameter.grad, -0.1, 0.1)
             self.Qvalue_optimizer2.step()
 
+
     def get_task_message(self):
-        self. algorithms = ['0.Adam', '1.RMSprop', '2.single_Adapid', '3.double_Adapid', '4.PID', '5.Adam_origin', '6.SGD-momentum']
+        self. algorithm_labels = ['0.Adam', '1.RMSprop', '2.single_Adapid', '3.double_Adapid', '4.PID', '5.Adam_origin', '6.SGD-momentum']
         self.derivative_sign = [0, 0, 1, 1, 1, 0, 0] #是否带微分项标志，与上方的算法对应
         self.Adaptive_sign = [1, 1, 1, 1, 0, 1, 0]#是否带自适应项标志
+        print('algorithms:' + str(self.algorithm_labels))
         task = int(input('please input a task. 0 for algorithm modify, 1 for learning rate modify, 2 for beta modify, 3 for PID modify: \n ' ))
         if task == 0:
             algorithms = eval(input('please input the list of test algorithms: \n'))
@@ -287,7 +301,7 @@ class SAC(nn.Module):
                         betas.append(betas[-1])
             self.test_len = len(betas)
         else:
-            betas = float(input('please input a single beta value (list of beta1 and beta2 for Adaptive algorithm):\n'))
+            betas = eval(input('please input a single beta value (list of beta1 and beta2 for Adaptive algorithm):\n'))
         if task == 0:
             PIparameter = eval(input('please input the list of testing pid parameters:'))
             if len(PIparameter) > len(algorithms):
@@ -300,7 +314,7 @@ class SAC(nn.Module):
                 PIparameter = eval(input('please input the list of testing pid parameters:'))
                 self.test_len = len(PIparameter)
             else:
-                PIparameter = float(input('please input a single pid parameter group value: \n'))
+                PIparameter = eval(input('please input a single pid parameter group value: \n'))
         else:
             PIparameter = []
         self.task = task
@@ -314,33 +328,37 @@ class SAC(nn.Module):
         self.oldnet_sign = 0
         for net in self.nets:
             if self.current_algorithm == 0:
-                optimizer = opt.Adamoptimizer(net.parameters(), lr=self.current_lr, weight_decay=0.0001,
-                                              momentum=self.current_beta[0], beta=self.current_beta[1])
+                optimizer = opt.Adamoptimizer(net.parameters(),weight_decay=0.0001,
+                                              momentum=self.current_beta[0], beta=self.current_beta[1],
+                                              lr=self.current_lr / 10 if net == self.policy_net else self.current_lr)
             elif self.current_algorithm == 1:
                 optimizer = opt.RMSpropoptimizer(net.parameters(), lr=self.current_lr, weight_decay=0.0001, beta=self.current_beta)
             elif self.current_algorithm == 2:
-                optimizer = opt.Adapidoptimizer(net.parameters(), lr=self.current_lr, weight_decay=0.0001,
+                optimizer = opt.Adapidoptimizer(net.parameters(), weight_decay=0.0001,
                                                 momentum=self.current_beta[0], beta=self.current_beta[1],
-                                                I=self.current_PIparameter[0], D=self.current_PIparameter[1])
-            if self.current_PIparameter[1] != 0:
-                self.oldnet_sign = 1
+                                                I=self.current_PIparameter[0], D=self.current_PIparameter[1],
+                                                lr=self.current_lr / 10 if net == self.policy_net else self.current_lr)
+                if self.current_PIparameter[1] != 0:
+                    self.oldnet_sign = 1
             elif self.current_algorithm == 3:
-                optimizer = opt.double_Adapidoptimizer(net.parameters(), lr=self.current_lr, weight_decay=0.0001,
+                optimizer = opt.double_Adapidoptimizer(net.parameters(), weight_decay=0.0001,
                                                 momentum=self.current_beta[0], beta=self.current_beta[1],
-                                                I=self.current_PIparameter[0], D=self.current_PIparameter[1])
-            if self.current_PIparameter[1] != 0:
-                self.oldnet_sign = 1
+                                                I=self.current_PIparameter[0], D=self.current_PIparameter[1],
+                                                lr=self.current_lr / 10 if net == self.policy_net else self.current_lr)
+                if self.current_PIparameter[1] != 0:
+                    self.oldnet_sign = 1
             elif self.current_algorithm == 4:
-                optimizer = opt.PIDoptimizer(net.parameters(), lr=self.current_lr, weight_decay=0.0001,
-                                                momentum=self.current_beta,
-                                                I=self.current_PIparameter[0], D=self.current_PIparameter[1])
+                optimizer = opt.PIDoptimizer(net.parameters(), weight_decay=0.0001, momentum=self.current_beta,
+                                             I=self.current_PIparameter[0], D=self.current_PIparameter[1],
+                                             lr=self.current_lr / 10 if net == self.policy_net else self.current_lr)
                 if self.current_PIparameter[1] != 0:
                     self.oldnet_sign = 1
             elif self.current_algorithm == 5:
-                optimizer = torch.optim.Adam(net.parameters(), lr=self.current_lr,
-                                             betas=(self.current_beta[0], self.current_beta[1]))
+                optimizer = torch.optim.Adam(net.parameters(),betas=(self.current_beta[0], self.current_beta[1]),
+                                             lr=self.current_lr / 10 if net == self.policy_net else self.current_lr)
             elif self.current_algorithm == 6:
-                optimizer = torch.optim.SGD(net.parameters(), lr=self.current_lr, momentum=self.current_beta)
+                optimizer = torch.optim.SGD(net.parameters(), momentum=self.current_beta,
+                                            lr=self.current_lr / 10 if net == self.policy_net else self.current_lr)
             else:
                 raise ValueError('Not correct algorithm symbol')
             optimizers.append(optimizer)
@@ -349,14 +367,14 @@ class SAC(nn.Module):
         self.Qvalue_optimizer1 = optimizers[2]
         self.Qvalue_optimizer2 = optimizers[3]
         if self.oldnet_sign == 1:
-            torch.save(self.policy_net, 'data/nets/policy.pkl')
-            torch.save(self.value_net, 'data/nets/value.pkl')
-            torch.save(self.Qvalue_net1, 'data/nets/Qvalue1.pkl')
-            torch.save(self.Qvalue_net2, 'data/nets/Qvalue2.pkl')
-            self.policy_old = torch.load('data/nets/policy.pkl')
-            self.value_old = torch.load('data/nets/value.pkl')
-            self.Qvalue_old1 = torch.load('data/nets/Qvalue1.pkl')
-            self.Qvalue_old2 = torch.load('data/nets/Qvalue2.pkl')
+            torch.save(self.policy_net, '/home/chen/programs/Doptimizer/data/nets/policy.pkl')
+            torch.save(self.value_net, '/home/chen/programs/Doptimizer/data/nets/value.pkl')
+            torch.save(self.Qvalue_net1, '/home/chen/programs/Doptimizer/data/nets/Qvalue1.pkl')
+            torch.save(self.Qvalue_net2, '/home/chen/programs/Doptimizer/data/nets/Qvalue2.pkl')
+            self.policy_old = torch.load('/home/chen/programs/Doptimizer/data/nets/policy.pkl')
+            self.value_old = torch.load('/home/chen/programs/Doptimizer/data/nets/value.pkl')
+            self.Qvalue_old1 = torch.load('/home/chen/programs/Doptimizer/data/nets/Qvalue1.pkl')
+            self.Qvalue_old2 = torch.load('/home/chen/programs/Doptimizer/data/nets/Qvalue2.pkl')
 
     def set_current_parameters(self):
         if self.test_sign >= self.test_len:
@@ -378,6 +396,7 @@ class SAC(nn.Module):
                 self.current_beta = self.current_beta[0]
             elif self.Adaptive_sign[self.current_algorithm] == 1 and isinstance(self.current_beta, list) == False:
                 self.current_beta = [self.current_beta, self.current_beta]
+            self.current_PIparameter = []
             if self.derivative_sign[self.current_algorithm] == True:
                 if self.task == 0 or self.task == 3:
                     self.current_PIparameter = self.PIparameter[self.test_sign]
