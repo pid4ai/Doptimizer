@@ -139,24 +139,27 @@ class SAC(nn.Module):
         super(SAC, self).__init__()
         self.algorithm = int(input('SGD0 OR ADAM1 \n'))
         if self.algorithm == 0:
-            self.optparameter = eval(input('SGD parameters, lr, momentum \n'))
+            self.optparameter = eval(input('policy SGD parameters, lr, momentum \n'))
         else:
-            self.optparameter = eval(input('Adam parameters, lr, beta \n'))
+            self.optparameter = eval(input('policy Adam parameters, lr, beta \n'))
+        self.valgorithm = int(input('SGD0 OR ADAM 1 \n'))
+        if self.valgorithm == 0:
+            self.voptparameter = eval(input('value SGD parameters, lr ,momentum\n'))
+        else:
+            self.voptparameter = eval(input('value Adam parameters, lr, beta\n'))
         self.replay_memory_store = deque()
         self.step_index = 0
         self.replace = 500
         self.replace_sign = replace_sign
         self.replace_rate = 0.01
         #self.action_lr = 0.00002
-        self.value_lr = float(input('please input value_lr \n'))
+        #self.value_lr = float(input('please input value_lr \n'))
         self.action_renew_steps = 5
         self.gamma = 0.97
         self.memory_size = 30000
         self.batch_size = 32
-        self.alpha = 5
-
-
-        self.alpha = 0.1
+        self.alpha = 0.2
+        self.train_steps = 0
 
         self.policy_net = policy_net(state_dim, action_dim).cuda()
         self.value_net = value_net(state_dim).cuda()
@@ -170,10 +173,25 @@ class SAC(nn.Module):
                                                     momentum=self.optparameter[1], weight_decay=0.0001)
         else:
             self.policy_optimizer = torch.optim.Adam(self.policy_net.parameters(), lr=self.optparameter[0],
-                                        betas=(self.optparameter[1][0], self.optparameter[1][1]), weight_decay=0.0001)
-        self.value_optimizer = torch.optim.Adam(self.value_net.parameters(), lr=self.value_lr, betas=(0.9,0.999), weight_decay=0.0001)
-        self.Qvalue_optimizer1 = torch.optim.Adam(self.Qvalue_net1.parameters(), lr=self.value_lr, betas=(0.9,0.999), weight_decay=0.0001)
-        self.Qvalue_optimizer2 = torch.optim.Adam(self.Qvalue_net2.parameters(), lr=self.value_lr, betas=(0.9,0.999), weight_decay=0.0001)
+                                                     betas=(self.optparameter[1][0], self.optparameter[1][1]),
+                                                     weight_decay=0.0001)
+        if self.valgorithm == 0:
+            self.value_optimizer = torch.optim.SGD(self.value_net.parameters(), lr=self.voptparameter[0],
+                                                   momentum=self.voptparameter[1], weight_decay=0.0001)
+            self.Qvalue_optimizer1 = torch.optim.SGD(self.Qvalue_net1.parameters(), lr=self.voptparameter[0],
+                                                     momentum=self.voptparameter[1], weight_decay=0.0001)
+            self.Qvalue_optimizer2 = torch.optim.SGD(self.Qvalue_net2.parameters(), lr=self.voptparameter[0],
+                                                     momentum=self.voptparameter[1], weight_decay=0.0001)
+        else:
+            self.value_optimizer = torch.optim.Adam(self.value_net.parameters(), lr=self.voptparameter[0],
+                                                    betas=(self.voptparameter[1][0], self.voptparameter[1][1]),
+                                                    weight_decay=0.0001)
+            self.Qvalue_optimizer1 = torch.optim.Adam(self.Qvalue_net1.parameters(), lr=self.voptparameter[0],
+                                                      betas=(self.voptparameter[1][0], self.voptparameter[1][1]),
+                                                      weight_decay=0.0001)
+            self.Qvalue_optimizer2 = torch.optim.Adam(self.Qvalue_net2.parameters(), lr=self.voptparameter[0],
+                                                      betas=(self.voptparameter[1][0], self.voptparameter[1][1]),
+                                                      weight_decay=0.0001)
 
     def SAC_training(self, state, action, reward, next_state, done):
         self.replay_memory_store.append([state, action, reward, next_state, done])
@@ -246,6 +264,10 @@ class SAC(nn.Module):
             for parameter in parameters:
                 torch.clamp(parameter.grad, -0.1, 0.1)
             self.Qvalue_optimizer2.step()
+            self.train_steps += 1
+            return -policy_loss.detach().cpu().numpy()
+        else:
+            return 0
 
 
 

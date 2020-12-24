@@ -145,6 +145,9 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, i
         optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate, betas=(momentum, beta))
     elif optimizer_sign == 6:
         optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate, momentum=momentum)
+    elif optimizer_sign == 7:
+        optimizer = special_pid.HAdamoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
+                                               momentum=momentum, beta=beta)
     else:
         raise ValueError('Not correct algorithm symbol')
     if oldnet_sign and derivative != 0:
@@ -233,7 +236,8 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, i
 
 
 'Algorithms that can be choosed'
-algorithm_labels = ['0.Adam', '1.RMSprop', '2.single_Adapid', '3.double_Adapid', '4.PID', '5.Adam_origin', '6.SGD-momentum']
+algorithm_labels = ['0.Adam', '1.RMSprop', '2.single_Adapid', '3.double_Adapid', '4.PID', '5.Adam_origin',
+                    '6.SGD-momentum', '7.HAdam']
 
 task = int(input('please input a task, 0 for algorithm comparing, 1 for learning rate modify, '
                  '2 for derivative parameter modify, 3 for integrate parameter modify, '

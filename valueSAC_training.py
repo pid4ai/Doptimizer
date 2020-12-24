@@ -38,7 +38,7 @@ def main():
         for step in range(STEP):
             a = agent.policy_net.get_action(state)
             action = np.tanh(a) * max_action
-            next_state = np.dot(matG,state)+matH*(action+random.uniform(-0.05,0.05))
+            next_state = np.dot(matG,state)+matH*(action+random.uniform(-0.02,0.02))
             total_reward += 1
             if abs(next_state[1]) < 0.01 or abs(state[0]) > 0.5:
                 reward = 1
@@ -80,7 +80,7 @@ def main():
                 '''
                 for step in range(STEP):
                     action = np.tanh(agent.policy_net.get_action(state)) * max_action
-                    state = np.dot(matG,state)+matH*(action+random.uniform(-0.05, 0.05))
+                    state = np.dot(matG,state)+matH*(action+random.uniform(-0.02, 0.02))
                     total_reward += 1
                     '''
                     screen.fill(settings.bg_color)

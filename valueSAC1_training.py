@@ -4,6 +4,7 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 import time
+import os
 
 
 def main():
@@ -21,7 +22,8 @@ def main():
     matH = settings.matH
     max_action = settings.max_action
 
-    a1 = []
+    succeed_steps = []
+    policy_losses = []
 
     agent = env.SAC(4, 1)
 
@@ -40,16 +42,17 @@ def main():
             action = np.tanh(a) * max_action
             next_state = np.dot(matG,state)+matH*(action+random.uniform(-0.05,0.05))
             total_reward += 1
+            reward = (abs(next_state[1]) ** 0.5 + abs(next_state[2]) ** 0.5) * -2
             if abs(next_state[1]) < 0.01 and abs(next_state[2]) < 0.01:
-                reward = 1
+                reward += 1
             elif abs(next_state[1]) < 0.03 and abs(next_state[2]) < 0.03:
-                reward = 0.5
+                reward += 0.5
             elif abs(next_state[1]) < 0.06 and abs(next_state[2]) < 0.06:
-                reward = -0.5
+                reward -= 0.5
             elif abs(next_state[1]) < 0.1 and abs(next_state[2]) < 0.1:
-                reward = -2
+                reward -= 2
             else:
-                reward = -5
+                reward -= 5
             screen.fill(settings.bg_color)
             car.xshift(next_state[0])
             car.draw_pendulum(screen, next_state[0], next_state[1],next_state[2])
@@ -59,10 +62,11 @@ def main():
                 done = 1
             else:
                 done = 0
-            agent.SAC_training(np.concatenate([state[1:3], state[4:6]]), a, reward, np.concatenate([next_state[1:3], next_state[4:6]]), done)
+            policy_losses.append(agent.SAC_training(np.concatenate([state[1:3], state[4:6]]),
+                                 a, reward, np.concatenate([next_state[1:3], next_state[4:6]]), done))
             state = next_state
             if done:
-                a1.append(total_reward)
+                succeed_steps.append(total_reward)
                 break
 
         if i % 5 == 0:
@@ -95,14 +99,35 @@ def main():
                         break
             ave_reward = total_reward / TEST
             print('episodes:', i, 'average_reward:',ave_reward)
-            a1.append(ave_reward)
-            if ave_reward >= STEP or i>= EPISODE - 5:
-                plt.plot(a1)
+            succeed_steps.append(ave_reward)
+            if agent.train_steps > 500000 or i>= EPISODE - 5:
+                if os.path.exists('data/matplotlib/num.txt'):
+                    with open('data/matplotlib/num.txt', 'r') as f:
+                        graphicsnum = eval(f.read())
+                    if graphicsnum == None:
+                        with open('data/matplotlib/num.txt', 'w') as f:
+                            f.write('0')
+                            graphicsnum = 0
+                    else:
+                        with open('data/matplotlib/num.txt', 'w') as f:
+                            f.write(str(int(graphicsnum ) + 1))
+                else:
+                    graphicsnum = 0
+                    with open('data/matplotlib/num.txt', 'w') as f:
+                        f.write(0)
+                plt.plot(succeed_steps)
                 plt.title('value SAC 2nd pendulum')
                 plt.xlabel('episodes')
                 plt.ylabel('steps')
+                plt.savefig('data/matplotlib/RL' + str(graphicsnum))
                 plt.show()
-                plt.savefig('data/RL')
+                plt.cla()
+                plt.plot(policy_losses)
+                plt.title('value SAC 2nd pendulum')
+                plt.xlabel('steps')
+                plt.ylabel('policy loss')
+                plt.savefig('data/matplotlib/RL' + str(graphicsnum))
+                plt.show()
                 break
 
 
