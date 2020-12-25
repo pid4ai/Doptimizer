@@ -24,6 +24,7 @@ def main():
 
     succeed_steps = []
     policy_losses = []
+    value_losses = []
 
     agent = env.SAC(4, 1)
 
@@ -62,8 +63,10 @@ def main():
                 done = 1
             else:
                 done = 0
-            policy_losses.append(agent.SAC_training(np.concatenate([state[1:3], state[4:6]]),
-                                 a, reward, np.concatenate([next_state[1:3], next_state[4:6]]), done))
+            policy_loss, value_loss =agent.SAC_training(np.concatenate([state[1:3], state[4:6]]),
+                                 a, reward, np.concatenate([next_state[1:3], next_state[4:6]]), done)
+            policy_losses.append(policy_loss)
+            value_losses.append(value_loss)
             state = next_state
             if done:
                 succeed_steps.append(total_reward)
@@ -103,30 +106,42 @@ def main():
             if agent.train_steps > 500000 or i>= EPISODE - 5:
                 if os.path.exists('data/matplotlib/num.txt'):
                     with open('data/matplotlib/num.txt', 'r') as f:
-                        graphicsnum = eval(f.read())
-                    if graphicsnum == None:
+                        graphicsnum = f.read()
+                    if graphicsnum == '':
                         with open('data/matplotlib/num.txt', 'w') as f:
                             f.write('0')
                             graphicsnum = 0
                     else:
+                        graphicsnum = int(graphicsnum)
                         with open('data/matplotlib/num.txt', 'w') as f:
-                            f.write(str(int(graphicsnum ) + 1))
+                            f.write(str(graphicsnum + 1))
                 else:
                     graphicsnum = 0
                     with open('data/matplotlib/num.txt', 'w') as f:
-                        f.write(0)
+                        f.write('0')
+
                 plt.plot(succeed_steps)
-                plt.title('value SAC 2nd pendulum')
+                plt.title('value SAC 2nd pendulum,' + str(agent.algorithm) + ','
+                          + str(agent.optparameter) + ',' + 'return')
                 plt.xlabel('episodes')
                 plt.ylabel('steps')
-                plt.savefig('data/matplotlib/RL' + str(graphicsnum))
+                plt.savefig('data/matplotlib/RL0' + str(graphicsnum))
                 plt.show()
                 plt.cla()
                 plt.plot(policy_losses)
-                plt.title('value SAC 2nd pendulum')
+                plt.title('value SAC 2nd pendulum,' + str(agent.algorithm) + ','
+                          + str(agent.optparameter) + ',' + 'policy_loss')
                 plt.xlabel('steps')
                 plt.ylabel('policy loss')
-                plt.savefig('data/matplotlib/RL' + str(graphicsnum))
+                plt.savefig('data/matplotlib/RL1' + str(graphicsnum))
+                plt.show()
+                plt.cla()
+                plt.plot(value_losses)
+                plt.title('value SAC 2nd pendulum,' + str(agent.algorithm) + ','
+                          + str(agent.optparameter) + ',' + 'value_loss')
+                plt.xlabel('steps')
+                plt.ylabel('value loss')
+                plt.savefig('data/matplotlib/RL2' + str(graphicsnum))
                 plt.show()
                 break
 

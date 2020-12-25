@@ -241,31 +241,43 @@ class SAC(nn.Module):
             policy_loss.backward()
             parameters = list(self.policy_net.parameters())
             for parameter in parameters:
-                torch.clamp(parameter.grad, -0.05, 0.05)
+                maxgrad = torch.max(torch.abs(parameter.grad))
+                if maxgrad > 0.05:
+                    parameter.grad = parameter.grad / (maxgrad/0.05)
+                #torch.clamp(parameter.grad, -0.05, 0.05)
             self.policy_optimizer.step()
 
             self.value_optimizer.zero_grad()
             value_loss.backward()
             parameters = list(self.value_net.parameters())
             for parameter in parameters:
-                torch.clamp(parameter.grad, -0.1, 0.1)
+                maxgrad = torch.max(torch.abs(parameter.grad))
+                if maxgrad > 0.1:
+                    parameter.grad = parameter.grad / (maxgrad/0.1)
+                #torch.clamp(parameter.grad, -0.1, 0.1)
             self.value_optimizer.step()
 
             self.Qvalue_optimizer1.zero_grad()
             Qvalue1_loss.backward()
             parameters = list(self.Qvalue_net1.parameters())
             for parameter in parameters:
-                torch.clamp(parameter.grad, -0.1, 0.1)
+                maxgrad = torch.max(torch.abs(parameter.grad))
+                if maxgrad > 0.1:
+                    parameter.grad = parameter.grad / (maxgrad/0.1)
+                #torch.clamp(parameter.grad, -0.1, 0.1)
             self.Qvalue_optimizer1.step()
 
             self.Qvalue_optimizer2.zero_grad()
             Qvalue2_loss.backward()
             parameters=list(self.Qvalue_net2.parameters())
             for parameter in parameters:
-                torch.clamp(parameter.grad, -0.1, 0.1)
+                maxgrad = torch.max(torch.abs(parameter.grad))
+                if maxgrad > 0.1:
+                    parameter.grad = parameter.grad / (maxgrad/0.1)
+                #torch.clamp(parameter.grad, -0.1, 0.1)
             self.Qvalue_optimizer2.step()
             self.train_steps += 1
-            return -policy_loss.detach().cpu().numpy()
+            return -policy_loss.detach().cpu().numpy(), Qvalue1_loss.detach().cpu().numpy()
         else:
             return 0
 
