@@ -274,7 +274,7 @@ class SAC(nn.Module):
     def get_task_message(self):
         self. algorithm_labels = ['0.Adam', '1.RMSprop', '2.single_Adapid', '3.double_Adapid', '4.PID', '5.Adam_origin', '6.SGD-momentum']
         self.derivative_sign = [0, 0, 1, 1, 1, 0, 0] #是否带微分项标志，与上方的算法对应
-        self.Adaptive_sign = [1, 1, 1, 1, 0, 1, 0]#是否带自适应项标志
+        self.Adaptive_sign = [1, 0, 1, 1, 0, 1, 0]#是否带自适应项标志
         print('algorithms:' + str(self.algorithm_labels))
         task = int(input('please input a task. 0 for algorithm modify, 1 for learning rate modify, 2 for beta modify, 3 for PID modify: \n ' ))
         if task == 0:
@@ -311,7 +311,7 @@ class SAC(nn.Module):
                 PIparameter = PIparameter[:len(algorithms)]
             else:
                 for i in range(len(algorithms) - len(PIparameter)):
-                    betas.append(PIparameter[-1])
+                    PIparameter.append(PIparameter[-1])
         elif self.derivative_sign[algorithms] == 1:
             if task == 3:
                 PIparameter = eval(input('please input the list of testing pid parameters:'))
