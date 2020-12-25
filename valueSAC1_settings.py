@@ -17,7 +17,7 @@ class Settings():
         self.bg_color = (0,192,255)
         self.title = 'double order inverted pendulum'
 
-        self.EPISODE = 10000
+        self.EPISODE = 5000
         self.TEST = 2
         self.TEST1 = 10
         self.STEP = 5000
@@ -158,7 +158,7 @@ class SAC(nn.Module):
         self.gamma = 0.97
         self.memory_size = 30000
         self.batch_size = 32
-        self.alpha = 0.2
+        self.alpha = 0.5
         self.train_steps = 0
 
         self.policy_net = policy_net(state_dim, action_dim).cuda()
@@ -241,45 +241,53 @@ class SAC(nn.Module):
             policy_loss.backward()
             parameters = list(self.policy_net.parameters())
             for parameter in parameters:
+                '''
                 maxgrad = torch.max(torch.abs(parameter.grad))
-                if maxgrad > 0.05:
-                    parameter.grad = parameter.grad / (maxgrad/0.05)
-                #torch.clamp(parameter.grad, -0.05, 0.05)
+                if maxgrad > 0.1:
+                    parameter.grad = parameter.grad / (maxgrad/0.1)
+                '''
+                torch.clamp(parameter.grad, -0.05, 0.05)
             self.policy_optimizer.step()
 
             self.value_optimizer.zero_grad()
             value_loss.backward()
             parameters = list(self.value_net.parameters())
             for parameter in parameters:
+                '''
                 maxgrad = torch.max(torch.abs(parameter.grad))
                 if maxgrad > 0.1:
                     parameter.grad = parameter.grad / (maxgrad/0.1)
-                #torch.clamp(parameter.grad, -0.1, 0.1)
+                '''
+                torch.clamp(parameter.grad, -0.1, 0.1)
             self.value_optimizer.step()
 
             self.Qvalue_optimizer1.zero_grad()
             Qvalue1_loss.backward()
             parameters = list(self.Qvalue_net1.parameters())
             for parameter in parameters:
+                '''
                 maxgrad = torch.max(torch.abs(parameter.grad))
                 if maxgrad > 0.1:
                     parameter.grad = parameter.grad / (maxgrad/0.1)
-                #torch.clamp(parameter.grad, -0.1, 0.1)
+                '''
+                torch.clamp(parameter.grad, -0.1, 0.1)
             self.Qvalue_optimizer1.step()
 
             self.Qvalue_optimizer2.zero_grad()
             Qvalue2_loss.backward()
             parameters=list(self.Qvalue_net2.parameters())
             for parameter in parameters:
+                '''
                 maxgrad = torch.max(torch.abs(parameter.grad))
                 if maxgrad > 0.1:
                     parameter.grad = parameter.grad / (maxgrad/0.1)
-                #torch.clamp(parameter.grad, -0.1, 0.1)
+                '''
+                torch.clamp(parameter.grad, -0.1, 0.1)
             self.Qvalue_optimizer2.step()
             self.train_steps += 1
             return -policy_loss.detach().cpu().numpy(), Qvalue1_loss.detach().cpu().numpy()
         else:
-            return 0
+            return 0, 0
 
 
 
