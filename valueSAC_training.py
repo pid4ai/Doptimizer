@@ -99,7 +99,7 @@ def main():
             ave_reward = total_reward / TEST
             print('episodes:', i, 'average_reward:',ave_reward)
             a1.append(ave_reward)
-            if ave_reward >= STEP or i > EPISODE - 5:
+            if ave_reward >= STEP or i > (EPISODE - 5):
                 return(a1)
 
 

@@ -230,14 +230,14 @@ class SAC(nn.Module):
                 parameters = list(self.Qvalue_old2.parameters())
                 old_grads = [parameter.grad.clone() for parameter in parameters]
                 self.Qvalue_optimizer2.get_oldgrad(old_grads)
-                torch.save(self.policy_net, '/home/chen/programs/Doptimizer/data/nets/policy.pkl')
-                torch.save(self.value_net, '/home/chen/programs/Doptimizer/data/nets/value.pkl')
-                torch.save(self.Qvalue_net1, '/home/chen/programs/Doptimizer/data/nets/Qvalue1.pkl')
-                torch.save(self.Qvalue_net2, '/home/chen/programs/Doptimizer/data/nets/Qvalue2.pkl')
-                self.policy_old = torch.load('/home/chen/programs/Doptimizer/data/nets/policy.pkl')
-                self.value_old = torch.load('/home/chen/programs/Doptimizer/data/nets/value.pkl')
-                self.Qvalue_old1 = torch.load('/home/chen/programs/Doptimizer/data/nets/Qvalue1.pkl')
-                self.Qvalue_old2 = torch.load('/home/chen/programs/Doptimizer/data/nets/Qvalue2.pkl')
+                torch.save(self.policy_net, 'E:/files\programs\Gitkraken\Doptimizer/data/nets/policy.pkl')
+                torch.save(self.value_net, 'E:/files\programs\Gitkraken\Doptimizer/data/nets/value.pkl')
+                torch.save(self.Qvalue_net1, 'E:/files\programs\Gitkraken\Doptimizer/data/nets/Qvalue1.pkl')
+                torch.save(self.Qvalue_net2, 'E:/files\programs\Gitkraken\Doptimizer/data/nets/Qvalue2.pkl')
+                self.policy_old = torch.load('E:/files\programs\Gitkraken\Doptimizer/data/nets/policy.pkl')
+                self.value_old = torch.load('E:/files\programs\Gitkraken\Doptimizer/data/nets/value.pkl')
+                self.Qvalue_old1 = torch.load('E:/files\programs\Gitkraken\Doptimizer/data/nets/Qvalue1.pkl')
+                self.Qvalue_old2 = torch.load('E:/files\programs\Gitkraken\Doptimizer/data/nets/Qvalue2.pkl')
 
             self.policy_optimizer.zero_grad()
             policy_loss.backward()
@@ -370,14 +370,14 @@ class SAC(nn.Module):
         self.Qvalue_optimizer1 = optimizers[2]
         self.Qvalue_optimizer2 = optimizers[3]
         if self.oldnet_sign == 1:
-            torch.save(self.policy_net, '/home/chen/programs/Doptimizer/data/nets/policy.pkl')
-            torch.save(self.value_net, '/home/chen/programs/Doptimizer/data/nets/value.pkl')
-            torch.save(self.Qvalue_net1, '/home/chen/programs/Doptimizer/data/nets/Qvalue1.pkl')
-            torch.save(self.Qvalue_net2, '/home/chen/programs/Doptimizer/data/nets/Qvalue2.pkl')
-            self.policy_old = torch.load('/home/chen/programs/Doptimizer/data/nets/policy.pkl')
-            self.value_old = torch.load('/home/chen/programs/Doptimizer/data/nets/value.pkl')
-            self.Qvalue_old1 = torch.load('/home/chen/programs/Doptimizer/data/nets/Qvalue1.pkl')
-            self.Qvalue_old2 = torch.load('/home/chen/programs/Doptimizer/data/nets/Qvalue2.pkl')
+            torch.save(self.policy_net, 'E:/files\programs\Gitkraken\Doptimizer/data/nets/policy.pkl')
+            torch.save(self.value_net, 'E:/files\programs\Gitkraken\Doptimizer/data/nets/value.pkl')
+            torch.save(self.Qvalue_net1, 'E:/files\programs\Gitkraken\Doptimizer/data/nets/Qvalue1.pkl')
+            torch.save(self.Qvalue_net2, 'E:/files\programs\Gitkraken\Doptimizer/data/nets/Qvalue2.pkl')
+            self.policy_old = torch.load('E:/files\programs\Gitkraken\Doptimizer/data/nets/policy.pkl')
+            self.value_old = torch.load('E:/files\programs\Gitkraken\Doptimizer/data/nets/value.pkl')
+            self.Qvalue_old1 = torch.load('E:/files\programs\Gitkraken\Doptimizer/data/nets/Qvalue1.pkl')
+            self.Qvalue_old2 = torch.load('E:/files\programs\Gitkraken\Doptimizer/data/nets/Qvalue2.pkl')
 
     def set_current_parameters(self):
         if self.test_sign >= self.test_len:
