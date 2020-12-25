@@ -25,8 +25,11 @@ def main():
     succeed_steps = []
     policy_losses = []
     value_losses = []
+    momentum_policy_loss = 0
+    momentum_value_loss = 0
 
     agent = env.SAC(4, 1)
+    show_beta = 0.998
 
     for i in range(EPISODE):
         state = np.zeros(6)
@@ -63,10 +66,12 @@ def main():
                 done = 1
             else:
                 done = 0
-            policy_loss, value_loss =agent.SAC_training(np.concatenate([state[1:3], state[4:6]]),
-                                 a, reward, np.concatenate([next_state[1:3], next_state[4:6]]), done)
-            policy_losses.append(policy_loss)
-            value_losses.append(value_loss)
+            policy_loss, value_loss = agent.SAC_training(np.concatenate([state[1:3], state[4:6]]),
+                                            a, reward, np.concatenate([next_state[1:3], next_state[4:6]]), done)
+            momentum_policy_loss = momentum_policy_loss * show_beta + policy_loss * (1 - show_beta)
+            momentum_value_loss = momentum_value_loss * show_beta + value_loss * (1 - show_beta)
+            policy_losses.append(momentum_policy_loss * (1 - show_beta ** (agent.train_steps + 1)))
+            value_losses.append(momentum_value_loss * (1 - show_beta ** (agent.train_steps + 1)))
             state = next_state
             if done:
                 succeed_steps.append(total_reward)
