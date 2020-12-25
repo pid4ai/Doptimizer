@@ -158,7 +158,7 @@ class SAC(nn.Module):
         self.gamma = 0.97
         self.memory_size = 30000
         self.batch_size = 32
-        self.alpha = 0.2
+        self.alpha = 0.5
         self.train_steps = 0
 
         self.policy_net = policy_net(state_dim, action_dim).cuda()
