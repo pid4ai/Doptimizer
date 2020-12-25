@@ -478,3 +478,56 @@ class Double_momentumoptimizer(Optimizer):
                 p.data.add_(-group['lr'], (I_buf / (1 - momentum ** param_state['time_buffer'])) / (v_buf + epsilon))
 
         return loss
+
+class alpha_Adamoptimizer(Optimizer):
+    def __init__(self, params, lr=required, momentum=0.9, beta=0.99, weight_decay=0,epsilon=0.0000001, alpha=2.5):
+        defaults = dict(lr=lr, momentum=momentum, beta=beta, weight_decay=weight_decay, epsilon=epsilon, alpha=alpha)
+
+        super(alpha_Adamoptimizer, self).__init__(params, defaults)
+
+    def __setstate__(self, state):
+        super(alpha_Adamoptimizer, self).__setstate__(state)
+
+    def step(self, closure=None):
+        """Performs a single optimization step.
+        Arguments:
+            closure (callable, optional): A closure that reevaluates the model
+                and returns the loss.
+        """
+        loss = None
+        if closure is not None:
+            loss = closure()
+
+        for group in self.param_groups:
+            weight_decay = group['weight_decay']
+            momentum = group['momentum']
+            epsilon = group['epsilon']
+            beta = group['beta']
+            alpha=group['alpha']
+            for p in group['params']:
+                if p.grad is None:
+                    continue
+                d_p = p.grad.data
+                param_state = self.state[p]
+                if weight_decay != 0:
+                    d_p.add_(weight_decay, p.data)
+                if 'v_buffer' not in param_state:
+                    param_state['v_buffer'] = (1-beta) * (torch.abs(d_p.clone()) ** alpha)
+                    param_state['time_buffer'] = 1
+                else:
+                    param_state['v_buffer'] = param_state['v_buffer'] * beta + (1-beta) * (torch.abs(d_p.clone()) ** alpha)
+                    param_state['time_buffer'] += 1
+                v_buf = param_state['v_buffer'] / (1 - beta ** param_state['time_buffer'])
+                if momentum != 0:
+                    if 'I_buffer' not in param_state:
+                        I_buf = param_state['I_buffer'] = torch.zeros_like(p.data)
+                        I_buf = d_p * (1 - momentum)
+                    else:
+                        I_buf = param_state['I_buffer']
+                        I_buf.mul_(momentum).add_(1 - momentum, d_p)
+                else:
+                    raise ValueError('Please using RMSprop instead')
+
+                p.data.add_(-group['lr'], (I_buf / (1 - momentum ** param_state['time_buffer'])) / ((v_buf + epsilon) ** (1 / alpha)))
+
+        return loss

@@ -9,9 +9,9 @@ import os
 
 def main():
 
-    pygame.init()
     settings = env.Settings()
     '''
+    pygame.init()
     screen = pygame.display.set_mode((settings.screen_width, settings.screen_height))
     pygame.display.set_caption(settings.title)
     car = env.Car(screen)
@@ -59,6 +59,7 @@ def main():
                 reward -= 2
             else:
                 reward -= 5
+            '''
             screen.fill(settings.bg_color)
             car.xshift(next_state[0])
             car.draw_pendulum(screen, next_state[0], next_state[1],next_state[2])
