@@ -557,7 +557,7 @@ for a in range(len(show_symbol)):
     plt.legend(test_algorithm_labels[a])
 
     plt.title(models[model_sign] + ' CIFAR10, ' + shows[show_symbol[a]])
-    plt.savefig('/home/chen/programs/Doptimizer/data/matplotlib/' + str(save_sign))
+    plt.savefig('data/matplotlib/' + str(save_sign))
     save_sign += 1
     plt.show()
     plt.cla()
