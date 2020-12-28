@@ -356,7 +356,7 @@ class PIDoptimizer(Optimizer):
                         D_buf.mul_(momentum).add_(1 - momentum, d_p.clone() - self.old_grads[i])
                     p_grad = ((d_p * current_P).add_(current_I, I_buf).add(D, D_buf))
                 else:
-                    p_grad = (d_p * current_P).add_(current_I, I_buf)
+                    p_grad = current_I *  I_buf / (1 - momentum ** param_state['time_buffer'])
                 p.data.add_(-group['lr'], p_grad)
 
         self.get_grad_symbol = False
@@ -568,15 +568,75 @@ class alpha_SGDoptimizer(Optimizer):
                     param_state['time_buffer'] += 1
                 if momentum != 0:
                     if 'I_buffer' not in param_state:
-                        I_buf = param_state['I_buffer'] = torch.zeros_like(p.data)
-                        I_buf = (torch.sign(d_p) * (torch.abs(d_p) ** alpha)) * (1 - momentum)
+                        param_state['I_buffer'] = (torch.sign(d_p.clone()) * (torch.abs(d_p.clone()) ** alpha)) * (1 - momentum)
                     else:
-                        I_buf = param_state['I_buffer']
-                        I_buf.mul_(momentum).add_(1 - momentum, torch.sign(d_p) * (torch.abs(d_p) ** alpha))
+                        param_state['I_buffer'] = param_state['I_buffer'] * momentum + (1 - momentum) * (torch.sign(d_p) * (torch.abs(d_p) ** alpha))
                 else:
                     raise ValueError('Please using RMSprop instead')
 
-                p.data.add_(-group['lr'], ((torch.sign(I_buf) * (torch.abs(I_buf) ** (1 / alpha))) / (1 - momentum ** param_state['time_buffer'])))
+                p.data.add_(-group['lr'], ((torch.sign(param_state['I_buffer']) * (torch.abs(param_state['I_buffer']) ** alpha)) / (1 - momentum ** param_state['time_buffer'])))
+
+        return loss
+
+class alpha_ascent_Adamoptimizer(Optimizer):
+    def __init__(self, params, lr=required, momentum=0.9, beta=0.99, weight_decay=0,epsilon=0.0000001):
+        defaults = dict(lr=lr, momentum=momentum, beta=beta, weight_decay=weight_decay, epsilon=epsilon)
+
+        super(alpha_ascent_Adamoptimizer, self).__init__(params, defaults)
+
+    def __setstate__(self, state):
+        super(alpha_ascent_Adamoptimizer, self).__setstate__(state)
+
+    def step(self, closure=None):
+        """Performs a single optimization step.
+        Arguments:
+            closure (callable, optional): A closure that reevaluates the model
+                and returns the loss.
+        """
+        loss = None
+        if closure is not None:
+            loss = closure()
+
+        for group in self.param_groups:
+            weight_decay = group['weight_decay']
+            momentum = group['momentum']
+            epsilon = group['epsilon']
+            beta = group['beta']
+            for p in group['params']:
+                if p.grad is None:
+                    continue
+                d_p = p.grad.data
+                param_state = self.state[p]
+                if weight_decay != 0:
+                    d_p.add_(weight_decay, p.data)
+                if 'time_buffer' not in param_state:
+                    param_state['v_buffer0'] = (1 - beta) * (torch.abs(d_p.clone()) ** 1.5)
+                    param_state['v_buffer1'] = (1 - beta) * (torch.abs(d_p.clone()) ** 3)
+                    param_state['time_buffer'] = 1
+                    v_buf = param_state['v_buffer0'] / (1 - beta ** param_state['time_buffer'])
+                elif param_state['time_buffer'] < 1000:
+                    param_state['v_buffer0'] = param_state['v_buffer0'] * beta + (1 - beta) * (torch.abs(d_p.clone()) ** 1.5)
+                    param_state['v_buffer1'] = param_state['v_buffer1'] * beta + (1 - beta) * (torch.abs(d_p.clone()) ** 3)
+                    param_state['time_buffer'] += 1
+                    v_buf = param_state['v_buffer0'] / (1 - beta ** param_state['time_buffer'])
+                else:
+                    param_state['v_buffer1'] = param_state['v_buffer1'] * beta + (1 - beta) * (torch.abs(d_p.clone()) ** 3)
+                    param_state['time_buffer'] += 1
+                    v_buf = param_state['v_buffer0'] / (1 - beta ** param_state['time_buffer'])
+                if momentum != 0:
+                    if 'I_buffer' not in param_state:
+                        I_buf = param_state['I_buffer'] = torch.zeros_like(p.data)
+                        I_buf = d_p * (1 - momentum)
+                    else:
+                        I_buf = param_state['I_buffer']
+                        I_buf.mul_(momentum).add_(1 - momentum, d_p)
+                else:
+                    raise ValueError('Please using RMSprop instead')
+
+                if param_state['time_buffer'] <= 1000:
+                    p.data.add_(-group['lr'], (I_buf / (1 - momentum ** param_state['time_buffer'])) / ((v_buf + epsilon) ** (2/3)))
+                else:
+                    p.data.add_(-group['lr'], (I_buf / (1 - momentum ** param_state['time_buffer'])) / ((v_buf + epsilon) ** (1/3)))
 
         return loss
 

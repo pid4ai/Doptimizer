@@ -101,7 +101,7 @@ test_loader = torch.utils.data.DataLoader(dataset=cifar10_test_dataset(), batch_
 BGD_loader = torch.utils.data.DataLoader(dataset=cifar10_dataset(),batch_size=len(images),shuffle=True)
 
 #testing functon
-def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, integrate=3, momentum=0.9, beta=0.999, alpha=1):
+def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, derivative=0, integrate=1, momentum=0.9, beta=0.999, alpha=1):
     training_data = {'train_loss': [], 'val_loss': [], 'train_acc': [], 'val_acc': [], 'ds': [], 'is': []}
     if model_sign == 0:
         net = cifar10_DenseNet(num_classes)
