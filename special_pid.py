@@ -533,8 +533,8 @@ class alpha_Adamoptimizer(Optimizer):
         return loss
 
 class alpha_SGDoptimizer(Optimizer):
-    def __init__(self, params, lr=required, momentum=0.9, weight_decay=0,epsilon=0.0000001, alpha=1):
-        defaults = dict(lr=lr, momentum=momentum, weight_decay=weight_decay, epsilon=epsilon, alpha=alpha)
+    def __init__(self, params, lr=required, momentum=0.9, weight_decay=0, alpha=1):
+        defaults = dict(lr=lr, momentum=momentum, weight_decay=weight_decay, alpha=alpha)
 
         super(alpha_SGDoptimizer, self).__init__(params, defaults)
 
@@ -554,7 +554,6 @@ class alpha_SGDoptimizer(Optimizer):
         for group in self.param_groups:
             weight_decay = group['weight_decay']
             momentum = group['momentum']
-            epsilon = group['epsilon']
             alpha=group['alpha']
             for p in group['params']:
                 if p.grad is None:
