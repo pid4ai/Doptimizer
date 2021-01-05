@@ -32,11 +32,10 @@ from PIL import Image
 
 # Hyper Parameters
 num_classes = 10
-num_epochs = 100
+num_epochs = 500
 batch_size = 1000
 
-# good set of params: learning_rates4 adam/doublepid [0.005,0.0006], i=1,d=1
-
+#dataset_sign = int(input('Please input a dataset sign, 0 for mnist, 1 for cifar10, 2 for imagenet'))
 model_sign = int(input('please input model sign: \n 0 for Densenet, 1 for CNN, 2 for ResNet18 \nmodel_sign:'))
  #cifar10 dataset
 dataset_path = 'cifar-10-batches-py/'
@@ -138,13 +137,16 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, momentum=0.9, b
         optimizer = alpha_optimizers.double_alpha_Adamoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
                                                                 momentum=momentum, beta=beta, alpha=alpha)
     elif optimizer_sign == 5:
-        optimizer = alpha_optimizers.alpha2ascent_Adamoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
+        optimizer = alpha_optimizers.alpha2ascent_Adamoptimizer(net.parameters(), lr=learning_rate[0],sgd_lr=learning_rate[1], weight_decay=0.0001,
                                                                 momentum=momentum, beta=beta)
     elif optimizer_sign == 6:
         optimizer = alpha_optimizers.alpha2_SGDoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001,
                                                                 momentum=momentum, alpha=alpha)
     elif optimizer_sign == 7:
-        optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum)
+        optimizer = alpha_optimizers.SGD_momentumoptimizer(net.parameters(), lr=learning_rate, weight_decay=0.0001, momentum=momentum)
+    elif optimizer_sign == 8:
+        optimizer = alpha_optimizers.Adam_to_SGDoptimizer(net.parameters(), lr=learning_rate[0], sgd_lr=learning_rate[1], weight_decay=0.0001,
+                                                          momentum=momentum, beta=beta)
     else:
         raise ValueError('Not correct algorithm symbol')
 
@@ -213,7 +215,7 @@ def training(model_sign=0, optimizer_sign=0, learning_rate=0.01, momentum=0.9, b
 
 'Algorithms that can be choosed'
 algorithm_labels = ['0.Adam', '1.alpha_adam', '2.alpha_SGD', '3.alpha_ascent_adam', '4.double_alpha_adam',
-                    '5.alpha2ascent_adam', '6.alpha2_SGD', '7.SGD']
+                    '5.alpha2ascent_adam', '6.alpha2_SGD', '7.SGD', '8.Adam_to_SGD']
 
 task = int(input('please input a task, 0 for algorithm comparing, 1 for learning rate modify, '
                  '2 for alpha modify \n'))
@@ -221,7 +223,6 @@ if task == 0:
     test_algorithms = eval(input('please input testing algorithms, only list consist of int(algorithm sign) supported\n'))
     test_algorithms = [int(i) for i in test_algorithms]
     learning_rates = eval(input('please input learning rates, must corresponding to the algorithms \n'))
-    learinig_rates = [float(i) for i in learning_rates]
     if len(test_algorithms) < 1 or len(test_algorithms) != len(learning_rates):
         raise ValueError('lr and algorithms are not corresponding')
     alphas = eval(input('please input the list of testing alphas correspond to test algorithms \n'))
@@ -236,7 +237,6 @@ if task == 0:
 elif task == 1:
     test_algorithm = int(input('please input a single algorithm symbol \n'))
     learning_rates = eval(input('please input testing learning rates,only list supported \n'))
-    learning_rates = [float(i) for i in learning_rates]
     if test_algorithm == 4:
         alphas = eval(input('please input a single alpha list for algorithm 4\n'))
     else:
@@ -277,9 +277,9 @@ if task == 0:
                     elif show_symbol[a] == 2:
                         comparing_data[a] = 100 - np.array(output['train_acc'])
                     elif show_symbol[a] == 3:
-                        comparing_data[a] = np.array(output['ds'])
+                        comparing_data[a] = np.array(output['val_acc'])
                     else:
-                        comparing_data[a] = np.array(output['is'])
+                        comparing_data[a] = np.array(output['val_loss'])
                 else:
                     if show_symbol[a] == 0:
                         comparing_data[a] += np.array(output['train_acc'])
@@ -288,13 +288,13 @@ if task == 0:
                     elif show_symbol[a] == 2:
                         comparing_data[a] += 100 - np.array(output['train_acc'])
                     elif show_symbol[a] == 3:
-                        comparing_data[a] += np.array(output['ds'])
+                        comparing_data[a] += np.array(output['val_acc'])
                     else:
-                        comparing_data[a] += np.array(output['is'])
+                        comparing_data[a] += np.array(output['val_loss'])
         for a in range(len(show_symbol)):
             comparing_datas[a].append(np.array(comparing_data[a]) / repeats)
             test_algorithm_labels[a].append(
-                algorithm_labels[test_algorithms[i]] + ' learning_rate=' + str(learning_rates[i]))
+                algorithm_labels[test_algorithms[i]] + ' learning_rate=' + str(learning_rates[i]) + ' alpha=' + str(alphas[i]))
 elif task == 1:
     for i in range(len(learning_rates)):
         for j in range(repeats):
@@ -309,9 +309,9 @@ elif task == 1:
                     elif show_symbol[a] == 2:
                         comparing_data[a] = 100 - np.array(output['train_acc'])
                     elif show_symbol[a] == 3:
-                        comparing_data[a] = np.array(output['ds'])
+                        comparing_data[a] = np.array(output['val_acc'])
                     else:
-                        comparing_data[a] = np.array(output['is'])
+                        comparing_data[a] = np.array(output['val_loss'])
                 else:
                     if show_symbol[a] == 0:
                         comparing_data[a] += np.array(output['train_acc'])
@@ -320,13 +320,13 @@ elif task == 1:
                     elif show_symbol[a] == 2:
                         comparing_data[a] += 100 - np.array(output['train_acc'])
                     elif show_symbol[a] == 3:
-                        comparing_data[a] += np.array(output['ds'])
+                        comparing_data[a] += np.array(output['val_acc'])
                     else:
-                        comparing_data[a] += np.array(output['is'])
+                        comparing_data[a] += np.array(output['val_loss'])
         for a in range(len(show_symbol)):
             comparing_datas[a].append(np.array(comparing_data[a]) / repeats)
             test_algorithm_labels[a].append(
-                algorithm_labels[test_algorithm] + ' learning_rate=' + str(learning_rates[i]))
+                algorithm_labels[test_algorithm] + ' learning_rate=' + str(learning_rates[i]) + 'alpha=' + str(alphas))
 elif task == 2:
     for i in range(len(learning_rates)):
         for j in range(repeats):
@@ -342,9 +342,9 @@ elif task == 2:
                     elif show_symbol[a] == 2:
                         comparing_data[a] = 100 - np.array(output['train_acc'])
                     elif show_symbol[a] == 3:
-                        comparing_data[a] = np.array(output['ds'])
+                        comparing_data[a] = np.array(output['val_acc'])
                     else:
-                        comparing_data[a] = np.array(output['is'])
+                        comparing_data[a] = np.array(output['cal_loss'])
                 else:
                     if show_symbol[a] == 0:
                         comparing_data[a] += np.array(output['train_acc'])
@@ -353,9 +353,9 @@ elif task == 2:
                     elif show_symbol[a] == 2:
                         comparing_data[a] += 100 - np.array(output['train_acc'])
                     elif show_symbol[a] == 3:
-                        comparing_data[a] += np.array(output['ds'])
+                        comparing_data[a] += np.array(output['val_acc'])
                     else:
-                        comparing_data[a] += np.array(output['is'])
+                        comparing_data[a] += np.array(output['val_loss'])
         for a in range(len(show_symbol)):
             comparing_datas[a].append(np.array(comparing_data[a]) / repeats)
             test_algorithm_labels[a].append(
